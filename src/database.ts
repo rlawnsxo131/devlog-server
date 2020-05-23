@@ -4,7 +4,7 @@ import {
   getConnectionManager,
   Connection,
   ConnectionOptions,
-  createConnection
+  createConnection,
 } from 'typeorm';
 import entities from './entity';
 
@@ -26,13 +26,13 @@ export default class Database {
       database: process.env.DEV_DB_DATABASE,
       charset: 'utf8mb4_unicode_ci',
       connectTimeout: 10000,
-      logging: ['info'],
+      logging: ['query'],
       // timezone: '-09:00',
       extra: {
-        connectionLimit: 10
+        connectionLimit: 10,
       },
       synchronize: true,
-      entities
+      entities,
     };
 
     return await createConnection(connectionOptions);

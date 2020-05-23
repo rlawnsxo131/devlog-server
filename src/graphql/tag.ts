@@ -13,25 +13,22 @@ export const typeDef = gql`
   }
 
   extend type Query {
-    tags(limit: Boolean): [Tag]
+    tags: [Tag]
   }
 `;
 
 export const resolvers: IResolvers = {
   Query: {
-    tags: async (_, { limit }: { limit: boolean }) => {
-      const query = getRepository(Tag)
+    tags: async _ => {
+      const tags = await getRepository(Tag)
         .createQueryBuilder('t')
         .select(['t.*, COUNT(*) as count'])
         .innerJoin(PostHasTag, 'pht', 't.id = pht.tag_id')
         .groupBy('t.id')
-        .orderBy('t.id', 'ASC');
-      if (limit) {
-        query.limit(8);
-      }
-      const tags = await query.getRawMany();
+        .orderBy('t.id', 'ASC')
+        .getRawMany();
       return tags;
-    }
+    },
   },
-  Mutation: {}
+  Mutation: {},
 };
