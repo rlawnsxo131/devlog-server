@@ -26,7 +26,7 @@ export default class Database {
       database: process.env.DEV_DB_DATABASE,
       charset: 'utf8mb4_unicode_ci',
       connectTimeout: 10000,
-      logging: ['query'],
+      logging: ['info'],
       // timezone: '-09:00',
       extra: {
         connectionLimit: 10,
