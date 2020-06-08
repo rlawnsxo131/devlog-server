@@ -62,7 +62,7 @@ export const resolvers: IResolvers = {
         .getMany();
 
       return comments;
-    }
+    },
   },
   Query: {
     post: async (_, { id }: { id: number }) => {
@@ -99,7 +99,7 @@ export const resolvers: IResolvers = {
         console.error(e);
         throw new ApolloError('GET_POSTS ERROR');
       }
-    }
+    },
   },
   Mutation: {
     enrollPost: async (_, args) => {
@@ -109,7 +109,7 @@ export const resolvers: IResolvers = {
         post_body,
         short_description,
         open_yn,
-        tags
+        tags,
       } = args as EnrollPostArgs;
       try {
         // insert or update post
@@ -126,8 +126,8 @@ export const resolvers: IResolvers = {
         if (tags.length) {
           const tagList: Array<{ name: string }> = tags
             .filter(v => v.length)
-            .map(val => {
-              return { name: val };
+            .map(v => {
+              return { name: v };
             });
 
           // insert tags
@@ -150,7 +150,7 @@ export const resolvers: IResolvers = {
                 .getOne();
               return {
                 post_id: post.id,
-                tag_id: tag?.id
+                tag_id: tag?.id,
               };
             })
           );
@@ -166,6 +166,6 @@ export const resolvers: IResolvers = {
         console.error(e);
         throw new ApolloError('CREATE POST ERROR');
       }
-    }
-  }
+    },
+  },
 };
