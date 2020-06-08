@@ -10,6 +10,7 @@ export const typeDef = gql`
     email: String!
     token: String!
   }
+
   extend type Query {
     authCheck: AdminUser!
   }
@@ -32,7 +33,7 @@ export const resolvers: IResolvers = {
         throw new ApolloError('Not Found admin_user');
       }
       return adminUser;
-    }
+    },
   },
   Mutation: {
     signIn: async (_, { email, password }, ctx) => {
@@ -51,11 +52,11 @@ export const resolvers: IResolvers = {
         const token = await generateToken({ user_id: adminUser.id, email });
         ctx.cookies.set('access_token', token, {
           httpOnly: true,
-          maxAge: 1000 * 60 * 60 * 24 * 7
+          maxAge: 1000 * 60 * 60 * 24 * 7,
         });
         return {
           email,
-          token
+          token,
         };
       } catch (e) {
         console.error(e);
@@ -68,6 +69,6 @@ export const resolvers: IResolvers = {
       }
       ctx.cookies.set('access_token', null);
       return true;
-    }
-  }
+    },
+  },
 };
