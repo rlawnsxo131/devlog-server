@@ -62,7 +62,7 @@ export const resolvers: IResolvers = {
     },
     comment: (parent: Comment) => {
       return parent.deleted ? '삭제된 댓글입니다.' : parent.comment;
-    }
+    },
   },
   Query: {
     comments: async (_, { post_id }) => {
@@ -90,7 +90,7 @@ export const resolvers: IResolvers = {
         throw new ApolloError('Not Matched Password');
       }
       return comment;
-    }
+    },
   },
   Mutation: {
     createComment: async (_, args) => {
@@ -100,7 +100,7 @@ export const resolvers: IResolvers = {
         writer,
         password,
         email,
-        comment
+        comment,
       } = args as CreateCommentArgs;
       if (!post_id) {
         throw new ApolloError('Not Found Target post_id');
@@ -174,6 +174,6 @@ export const resolvers: IResolvers = {
         console.error(e);
         throw new ApolloError('Remove Comment Error');
       }
-    }
-  }
+    },
+  },
 };
