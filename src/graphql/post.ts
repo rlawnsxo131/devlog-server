@@ -52,6 +52,7 @@ export const resolvers: IResolvers = {
       const tags: Array<PostTag> = await loaders.tag.load(parent.id);
       return tags.map(tag => tag.name);
     },
+    // 이건 나중에 지울생각을 좀 하자..
     comments: async (parent: Post) => {
       const comments = await getRepository(Comment)
         .createQueryBuilder('c')
