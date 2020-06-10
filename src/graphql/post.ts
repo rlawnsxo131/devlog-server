@@ -16,7 +16,7 @@ export const typeDef = gql`
     created_at: Date!
     updated_at: Date!
     tags: [String]!
-    comments: [Comment]!
+    comments_count: Int!
   }
 
   extend type Query {
@@ -52,17 +52,15 @@ export const resolvers: IResolvers = {
       const tags: Array<PostTag> = await loaders.tag.load(parent.id);
       return tags.map(tag => tag.name);
     },
-    // 이건 나중에 지울생각을 좀 하자..
-    comments: async (parent: Post) => {
-      const comments = await getRepository(Comment)
+    comments_count: async (parent: Post) => {
+      const commentsCount = await getRepository(Comment)
         .createQueryBuilder('c')
         .where('c.post_id = :post_id', { post_id: parent.id })
-        .andWhere('c.level = 0')
         .andWhere('(c.deleted = false or c.has_replies = true)')
         .orderBy('c.id', 'ASC')
-        .getMany();
+        .getCount();
 
-      return comments;
+      return commentsCount;
     },
   },
   Query: {
