@@ -4,7 +4,7 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  Index
+  Index,
 } from 'typeorm';
 
 @Entity('post')
@@ -21,7 +21,6 @@ export default class Post {
   @Column()
   short_description!: string;
 
-  @Index('ix_openyn')
   @Column({ default: false })
   open_yn!: boolean;
 
