@@ -1,13 +1,13 @@
 import * as Koa from 'koa';
 import * as bodyParser from 'koa-bodyparser';
 import * as logger from 'koa-logger';
-import * as cors from '@koa/cors';
 import { ApolloServer, ApolloError } from 'apollo-server-koa';
 import { config } from 'dotenv';
 import schema from './graphql/schema';
 import createLoaders from './lib/createLoaders';
 import routes from './routes';
 import { checkToken } from './lib/middlewares/jwtMiddleware';
+import cors from './lib/middlewares/cors';
 
 config();
 const app = new Koa();
@@ -16,7 +16,7 @@ const app = new Koa();
 app.use(logger());
 app.use(bodyParser());
 app.use(checkToken);
-app.use(cors({ credentials: true }));
+app.use(cors);
 app.use(routes.routes()).use(routes.allowedMethods());
 
 const apollo = new ApolloServer({
@@ -27,14 +27,14 @@ const apollo = new ApolloServer({
         loaders: createLoaders(),
         ip: ctx.request.ip,
         cookies: ctx.cookies,
-        user_id: ctx.state.user_id
+        user_id: ctx.state.user_id,
       };
     } catch (e) {
       console.error(e);
       throw new ApolloError('Apollo Server Context Error');
     }
-  }
+  },
 });
-apollo.applyMiddleware({ app });
+apollo.applyMiddleware({ app, cors: false });
 
 export default app;

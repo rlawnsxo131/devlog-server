@@ -5,7 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Index,
-  getRepository
+  getRepository,
 } from 'typeorm';
 import * as DataLoader from 'dataloader';
 

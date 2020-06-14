@@ -137,7 +137,7 @@ export const resolvers: IResolvers = {
             .values(tagList)
             .execute();
 
-          // insert post_has_tag(tags)
+          // insert post_has_tag(tags) - need fix ( find in query )
           const insertPostHasTagList: Array<{
             post_id?: number;
             tag_id?: number;
