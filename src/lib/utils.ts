@@ -33,7 +33,7 @@ export async function createSortAndHash(
   >;
   return {
     salt: stringSalt,
-    hash: hash.toString('base64')
+    hash: hash.toString('base64'),
   };
 }
 
@@ -42,4 +42,8 @@ export async function decrypt(target: string, salt: string) {
     () => Buffer
   >;
   return result.toString('base64');
+}
+
+export function normalizedString(input: string): string {
+  return input.replace(/(\s*)/gi, '');
 }

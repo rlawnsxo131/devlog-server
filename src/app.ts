@@ -26,8 +26,6 @@ const apollo = new ApolloServer({
       return {
         loaders: createLoaders(),
         ip: ctx.request.ip,
-        cookies: ctx.cookies,
-        user_id: ctx.state.user_id,
       };
     } catch (e) {
       console.error(e);
