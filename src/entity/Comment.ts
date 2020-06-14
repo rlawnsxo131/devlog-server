@@ -29,7 +29,6 @@ export default class Comment {
   @Column({ unsigned: true, nullable: true })
   reply_comment_id?: number;
 
-  @Index('ix_deleted')
   @Column({ default: false })
   deleted!: boolean;
 

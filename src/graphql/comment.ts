@@ -157,18 +157,36 @@ export const resolvers: IResolvers = {
         if (!targetComment) {
           throw new ApolloError('Not Found Remove Target Comment');
         }
+        // targetComment
         targetComment.deleted = true;
-        targetComment.edited_at = new Date();
-        const replies = await commentRepo
+
+        const repliesCount = await commentRepo
           .createQueryBuilder('c')
           .where('reply_comment_id = :id', { id: targetComment.id })
-          .andWhere('level != 0')
           .andWhere('deleted = false')
-          .getMany();
-        if (!replies.length) {
+          .getCount();
+
+        if (repliesCount === 0) {
           targetComment.has_replies = false;
         }
         await commentRepo.save(targetComment);
+
+        // parentsComment
+        const parentsComment = await commentRepo.findOne(
+          targetComment.reply_comment_id
+        );
+        if (parentsComment) {
+          const parentsRepliesCount = await commentRepo
+            .createQueryBuilder('c')
+            .where('reply_comment_id = :id', { id: parentsComment.id })
+            .andWhere('deleted = false')
+            .getCount();
+          if (parentsRepliesCount === 0) {
+            parentsComment.has_replies = false;
+          }
+          await commentRepo.save(parentsComment);
+        }
+
         return true;
       } catch (e) {
         console.error(e);

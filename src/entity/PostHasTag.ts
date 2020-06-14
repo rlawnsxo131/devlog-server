@@ -4,7 +4,7 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  Index
+  Index,
 } from 'typeorm';
 
 @Entity('post_has_tag')
