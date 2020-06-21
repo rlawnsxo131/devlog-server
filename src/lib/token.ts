@@ -10,7 +10,7 @@ export function generateToken(
     // 이건 나중에 분기
     subject: 'auth',
     expiresIn: '7d',
-    ...options
+    ...options,
   };
   return new Promise((resolve, reject) => {
     if (!secretKey) return;

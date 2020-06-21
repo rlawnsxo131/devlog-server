@@ -19,8 +19,10 @@ type SignInParams = {
 };
 export const signIn: Middleware = async ctx => {
   const { email, password }: SignInParams = ctx.request.body;
+
   if (!normalizedString(email) || !normalizedString(password)) {
-    ctx.throw(400, 'Check Email or Password');
+    ctx.status = 400;
+    ctx.body = { msg: 'Check Email or Password' };
     return;
   }
 
@@ -31,7 +33,8 @@ export const signIn: Middleware = async ctx => {
     : undefined;
 
   if (!adminUser || decryptPassword !== adminUser.password) {
-    ctx.throw(400, 'Wrong Email or Password');
+    ctx.status = 400;
+    ctx.body = 'Wrong Email or Password';
     return;
   }
 
