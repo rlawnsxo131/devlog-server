@@ -4,13 +4,14 @@ import AdminUser from '../../../../entity/AdminUser';
 import { normalizedString, decrypt } from '../../../../lib/utils';
 import { generateToken } from '../../../../lib/token';
 
-export const authCheck: Middleware = ctx => {
+export const authCheck: Middleware = async ctx => {
   if (!ctx.state.user_id) throw new Error('Not Found user_id');
   const adminRepo = getRepository(AdminUser);
-  const adminUser = adminRepo.findOne(ctx.user_id);
+  const adminUser = await adminRepo.findOne(ctx.user_id);
   if (!adminUser) throw new Error('Not Found admin_user');
-
-  ctx.body = adminUser;
+  ctx.body = {
+    email: adminUser.email,
+  };
 };
 
 type SignInParams = {
