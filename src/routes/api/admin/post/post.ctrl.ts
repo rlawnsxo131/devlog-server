@@ -12,7 +12,14 @@ export const getPost: Middleware = async ctx => {
   }
 
   try {
-    const post = await getRepository(Post).findOne(id);
+    const post = await getRepository(Post)
+      .createQueryBuilder('p')
+      .select(['p.*, group_concat(t.name) as tags'])
+      .innerJoin(PostHasTag, 'pht', 'p.id = pht.post_id')
+      .innerJoin(Tag, 't', 'pht.tag_id = t.id')
+      .where('p.id = :id', { id })
+      .groupBy('p.id')
+      .getRawOne();
     ctx.body = {
       post,
     };
@@ -25,11 +32,19 @@ export const getPosts: Middleware = async ctx => {
   try {
     const posts = await getRepository(Post)
       .createQueryBuilder('p')
+      .select(['p.*, group_concat(t.name) as tags'])
+      .innerJoin(PostHasTag, 'pht', 'p.id = pht.post_id')
+      .innerJoin(Tag, 't', 'pht.tag_id = t.id')
       .where('1 = 1')
-      .orderBy('p.id', 'ASC')
-      .getMany();
+      .groupBy('p.id')
+      .orderBy('p.id', 'DESC')
+      .getRawMany();
+    // limit content length
+    const result = posts.map(v => {
+      return { ...v, post_body: v.post_body.slice(0, 200) };
+    });
     ctx.body = {
-      posts,
+      posts: result,
     };
   } catch (e) {
     ctx.throw(500, e);
