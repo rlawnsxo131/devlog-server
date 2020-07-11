@@ -19,6 +19,7 @@ export const authCheck: Middleware = async ctx => {
     }
     ctx.body = {
       email: adminUser.email,
+      user_roll: adminUser.user_roll,
     };
   } catch (e) {
     ctx.throw(500, e);
@@ -43,6 +44,7 @@ export const signIn: Middleware = async ctx => {
       ? await decrypt(password, adminUser.salt)
       : undefined;
 
+    // compare hash value
     if (!adminUser || decryptPassword !== adminUser.password) {
       ctx.status = 400;
       return;
@@ -55,7 +57,7 @@ export const signIn: Middleware = async ctx => {
     });
     ctx.body = {
       email,
-      token,
+      user_roll: adminUser.user_roll,
     };
   } catch (e) {
     console.error(e);
