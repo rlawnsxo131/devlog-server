@@ -15,8 +15,8 @@ export const getPost: Middleware = async ctx => {
     const post = await getRepository(Post)
       .createQueryBuilder('p')
       .select(['p.*, group_concat(t.name) as tags'])
-      .innerJoin(PostHasTag, 'pht', 'p.id = pht.post_id')
-      .innerJoin(Tag, 't', 'pht.tag_id = t.id')
+      .leftJoin(PostHasTag, 'pht', 'p.id = pht.post_id')
+      .leftJoin(Tag, 't', 'pht.tag_id = t.id')
       .where('p.id = :id', { id })
       .groupBy('p.id')
       .getRawOne();
@@ -33,8 +33,8 @@ export const getPosts: Middleware = async ctx => {
     const posts = await getRepository(Post)
       .createQueryBuilder('p')
       .select(['p.*, group_concat(t.name) as tags'])
-      .innerJoin(PostHasTag, 'pht', 'p.id = pht.post_id')
-      .innerJoin(Tag, 't', 'pht.tag_id = t.id')
+      .leftJoin(PostHasTag, 'pht', 'p.id = pht.post_id')
+      .leftJoin(Tag, 't', 'pht.tag_id = t.id')
       .where('1 = 1')
       .groupBy('p.id')
       .orderBy('p.id', 'DESC')
@@ -60,14 +60,8 @@ type EnrollPostArgs = {
   tags: Array<string>;
 };
 export const enrollPost: Middleware = async ctx => {
-  const {
-    id,
-    post_header,
-    post_body,
-    short_description,
-    open_yn,
-    tags,
-  } = ctx.params as EnrollPostArgs;
+  const { id, post_header, post_body, short_description, open_yn, tags } = ctx
+    .request.body as EnrollPostArgs;
 
   try {
     const postRepo = getRepository(Post);
