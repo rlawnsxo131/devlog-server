@@ -60,7 +60,6 @@ export const signIn: Middleware = async ctx => {
       user_roll: adminUser.user_roll,
     };
   } catch (e) {
-    console.error(e);
     ctx.throw(500, e);
   }
 };

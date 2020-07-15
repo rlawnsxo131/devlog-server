@@ -1,5 +1,5 @@
 import { Middleware } from 'koa';
-import { getRepository, createQueryBuilder, In } from 'typeorm';
+import { getRepository, In, getManager, EntityManager } from 'typeorm';
 import Post from '../../../../entity/Post';
 import Tag from '../../../../entity/Tag';
 import PostHasTag from '../../../../entity/PostHasTag';
@@ -10,7 +10,6 @@ export const getPost: Middleware = async ctx => {
     ctx.status = 400;
     return;
   }
-
   try {
     const post = await getRepository(Post)
       .createQueryBuilder('p')
@@ -63,59 +62,100 @@ export const enrollPost: Middleware = async ctx => {
   const { id, post_header, post_body, short_description, open_yn, tags } = ctx
     .request.body as EnrollPostArgs;
 
-  try {
-    const postRepo = getRepository(Post);
-    const post = id ? await postRepo.findOne(id) : new Post();
-    if (!post) {
-      ctx.status = 400;
-      return;
-    }
-    post.post_header = post_header;
-    post.short_description = short_description;
-    post.post_body = post_body;
-    post.open_yn = open_yn;
-    await postRepo.save(post);
+  // start transaction
+  await getManager().transaction(async (tm: EntityManager) => {
+    try {
+      const postRepo = tm.getRepository(Post);
+      const postHasTagRepo = tm.getRepository(PostHasTag);
+      const post = id ? await postRepo.findOne(id) : new Post();
+      if (!post) {
+        ctx.status = 400;
+        return;
+      }
+      const prevTags = await tm
+        .getRepository(Tag)
+        .createQueryBuilder('t')
+        .select('t.id, t.name, pht.id as post_has_tag_id')
+        .innerJoin(PostHasTag, 'pht', 't.id = pht.tag_id')
+        .where('pht.post_id = :id', { id: post.id })
+        .getRawMany();
 
-    // will has tags
-    if (tags.length) {
-      const tagList: Array<{ name: string }> = tags
-        .filter(v => v.length)
-        .map(v => {
-          return { name: v };
+      post.post_header = post_header;
+      post.short_description = short_description;
+      post.post_body = post_body;
+      post.open_yn = open_yn;
+      await postRepo.save(post);
+
+      if (!tags.length) {
+        await postHasTagRepo
+          .createQueryBuilder()
+          .delete()
+          .where('post_id = :id', { id: post.id })
+          .execute();
+      }
+
+      if (tags.length) {
+        // insert tag, post_has_tag
+        const tagList: Array<{ name: string }> = tags
+          .filter(v => v.length)
+          .map(v => {
+            return { name: v };
+          });
+        await tm
+          .createQueryBuilder()
+          .insert()
+          .into(Tag)
+          .orIgnore()
+          .values(tagList)
+          .execute();
+        const insertTags = await tm.getRepository(Tag).find({
+          where: {
+            name: In([tags]),
+          },
         });
+        const insertPostHasTagList = insertTags.map(tag => {
+          return {
+            post_id: post.id,
+            tag_id: tag.id,
+          };
+        });
+        await tm
+          .createQueryBuilder()
+          .insert()
+          .into(PostHasTag)
+          .orIgnore()
+          .values(insertPostHasTagList)
+          .execute();
 
-      // insert tags
-      await createQueryBuilder()
-        .insert()
-        .into(Tag)
-        .orIgnore()
-        .values(tagList)
-        .execute();
+        // delete post_has_tag
+        const deletePostHasTagIds = prevTags
+          .filter(v => !tags.includes(v.name))
+          .map(v => v.post_has_tag_id);
 
-      const insertPostHasTags = await getRepository(Tag).find({
-        where: {
-          name: In([tags]),
-        },
-      });
-      const insertPostHasTagList = insertPostHasTags.map(v => {
-        return {
-          post_id: post.id,
-          tag_id: v.id,
-        };
-      });
+        if (deletePostHasTagIds.length) {
+          await postHasTagRepo
+            .createQueryBuilder()
+            .delete()
+            .where('id IN (:ids)', { ids: deletePostHasTagIds })
+            .execute();
+        }
+      }
 
-      await createQueryBuilder()
-        .insert()
-        .into(PostHasTag)
-        .orIgnore()
-        .values(insertPostHasTagList)
-        .execute();
+      // delete tag
+      await tm.query(
+        `
+        DELETE
+        FROM t USING tag t
+        LEFT OUTER JOIN post_has_tag pht on t.id = pht.tag_id
+        WHERE pht.id IS NULL
+        `
+      );
+
+      ctx.body = {
+        post_id: post.id,
+      };
+    } catch (e) {
+      ctx.throw(500, e);
     }
-
-    ctx.body = {
-      post_id: post.id,
-    };
-  } catch (e) {
-    ctx.throw(500, e);
-  }
+  });
 };

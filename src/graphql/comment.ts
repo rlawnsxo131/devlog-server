@@ -105,6 +105,7 @@ export const resolvers: IResolvers = {
       if (!post_id) {
         throw new ApolloError('Not Found Target post_id');
       }
+
       const commentRepo = getRepository(Comment);
       const newComment = new Comment();
 
@@ -133,7 +134,6 @@ export const resolvers: IResolvers = {
         await commentRepo.save(newComment);
         return newComment;
       } catch (e) {
-        console.error(e);
         throw new ApolloError('CREATE_COMMENT ERROR');
       }
     },
@@ -144,11 +144,15 @@ export const resolvers: IResolvers = {
       if (!targetComment) {
         throw new ApolloError('Not Found Update Target Comment');
       }
-      targetComment.email = email && email;
-      targetComment.comment = comment;
-      targetComment.edited_at = new Date();
-      await commentRepo.save(targetComment);
-      return true;
+      try {
+        targetComment.email = email && email;
+        targetComment.comment = comment;
+        targetComment.edited_at = new Date();
+        await commentRepo.save(targetComment);
+        return true;
+      } catch (e) {
+        throw new ApolloError('Update Comment Error');
+      }
     },
     removeComment: async (_, { comment_id }) => {
       const commentRepo = getRepository(Comment);
@@ -186,10 +190,8 @@ export const resolvers: IResolvers = {
           }
           await commentRepo.save(parentsComment);
         }
-
         return true;
       } catch (e) {
-        console.error(e);
         throw new ApolloError('Remove Comment Error');
       }
     },

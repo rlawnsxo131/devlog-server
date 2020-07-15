@@ -55,7 +55,6 @@ export const resolvers: IResolvers = {
         }
         return post;
       } catch (e) {
-        console.error(e);
         throw new ApolloError('GET_POST ERROR');
       }
     },
@@ -75,7 +74,6 @@ export const resolvers: IResolvers = {
         const posts = await query.getMany();
         return posts;
       } catch (e) {
-        console.error(e);
         throw new ApolloError('GET_POSTS ERROR');
       }
     },

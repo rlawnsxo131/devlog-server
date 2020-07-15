@@ -30,7 +30,6 @@ const apollo = new ApolloServer({
         ip: ctx.request.ip,
       };
     } catch (e) {
-      console.error(e);
       throw new ApolloError('Apollo Server Context Error');
     }
   },
