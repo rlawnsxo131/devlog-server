@@ -83,7 +83,7 @@ export const enrollPost: Middleware = async ctx => {
       post.post_header = post_header;
       post.short_description = short_description;
       post.post_body = post_body;
-      post.open_yn = open_yn;
+      post.open_yn = Boolean(open_yn);
       await postRepo.save(post);
 
       if (!tags.length) {
