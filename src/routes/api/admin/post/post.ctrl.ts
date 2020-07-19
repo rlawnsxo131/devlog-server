@@ -98,9 +98,7 @@ export const enrollPost: Middleware = async ctx => {
         // insert tag, post_has_tag
         const tagList: Array<{ name: string }> = tags
           .filter(v => v.length)
-          .map(v => {
-            return { name: v };
-          });
+          .map(v => ({ name: v }));
         await tm
           .createQueryBuilder()
           .insert()
