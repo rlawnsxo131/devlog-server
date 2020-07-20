@@ -50,7 +50,11 @@ export const signIn: Middleware = async ctx => {
       return;
     }
 
-    const token = await generateToken({ user_id: adminUser.id, email });
+    const token = await generateToken({
+      user_id: adminUser.id,
+      email,
+      user_roll: adminUser.user_roll,
+    });
     ctx.cookies.set('access_token', token, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,
