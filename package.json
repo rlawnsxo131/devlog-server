@@ -19,7 +19,7 @@
     "koa-bodyparser": "^4.3.0",
     "koa-helmet": "^5.2.0",
     "koa-logger": "^3.2.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "mysql2": "^2.1.0",
     "serverless-http": "^2.5.0",
     "typeorm": "^0.2.25"
