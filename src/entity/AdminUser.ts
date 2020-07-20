@@ -7,7 +7,7 @@ import {
   Index,
 } from 'typeorm';
 
-enum UserRoll {
+export enum UserRoll {
   MASTER = 'MASTER',
   USER = 'USER',
 }
