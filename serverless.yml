@@ -27,7 +27,3 @@ functions:
       - http:
           path: /{any+}
           method: ANY
-      - http:
-          path: /dev/{any+}
-          method: any
-          cors: true
