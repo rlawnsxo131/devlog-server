@@ -150,10 +150,18 @@ export const enrollPost: Middleware = async ctx => {
       );
 
       ctx.body = {
-        post_id: post.id,
+        post,
       };
     } catch (e) {
       ctx.throw(500, e);
     }
   });
+};
+
+export const getSeriesPost: Middleware = async ctx => {
+  ctx.body = 'getSeriesPost';
+};
+
+export const getSeriesPosts: Middleware = async ctx => {
+  ctx.body = 'getSeriesPosts';
 };
