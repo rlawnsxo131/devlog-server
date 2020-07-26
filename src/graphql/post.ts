@@ -8,8 +8,8 @@ import Comment from '../entity/Comment';
 export const typeDef = gql`
   type Post {
     id: ID!
-    post_header: String
-    post_body: String
+    post_header: String!
+    post_body: String!
     short_description: String
     open_yn: Boolean!
     series_id: Int!

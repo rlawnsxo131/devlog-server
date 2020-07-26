@@ -3,6 +3,7 @@ import { merge } from 'lodash';
 import * as post from './post';
 import * as tag from './tag';
 import * as comment from './comment';
+import * as series from './series';
 
 const typeDef = gql`
   scalar Date
@@ -22,8 +23,20 @@ const resolvers: IResolvers = {
 };
 
 const schema = makeExecutableSchema({
-  typeDefs: [typeDef, post.typeDef, tag.typeDef, comment.typeDef],
-  resolvers: merge(resolvers, post.resolvers, tag.resolvers, comment.resolvers),
+  typeDefs: [
+    typeDef,
+    post.typeDef,
+    tag.typeDef,
+    comment.typeDef,
+    series.typeDef,
+  ],
+  resolvers: merge(
+    resolvers,
+    post.resolvers,
+    tag.resolvers,
+    comment.resolvers,
+    series.resolvers
+  ),
 });
 
 export default schema;

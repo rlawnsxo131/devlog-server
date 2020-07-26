@@ -1,10 +1,12 @@
 import { createTagsLoader } from '../entity/Tag';
 import { createCommentsLoader } from '../entity/Comment';
+import { createPostsLoader } from '../entity/Post';
 
 function createLoaders() {
   return {
     tag: createTagsLoader(),
-    comment: createCommentsLoader()
+    comment: createCommentsLoader(),
+    post: createPostsLoader(),
   };
 }
 

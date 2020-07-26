@@ -56,11 +56,19 @@ type EnrollPostArgs = {
   post_body: string;
   short_description: string;
   open_yn: boolean;
+  series_id?: number;
   tags: Array<string>;
 };
 export const enrollPost: Middleware = async ctx => {
-  const { id, post_header, post_body, short_description, open_yn, tags } = ctx
-    .request.body as EnrollPostArgs;
+  const {
+    id,
+    post_header,
+    post_body,
+    short_description,
+    open_yn,
+    series_id,
+    tags,
+  } = ctx.request.body as EnrollPostArgs;
 
   // start transaction
   await getManager().transaction(async (tm: EntityManager) => {
@@ -79,11 +87,11 @@ export const enrollPost: Middleware = async ctx => {
         .innerJoin(PostHasTag, 'pht', 't.id = pht.tag_id')
         .where('pht.post_id = :id', { id: post.id })
         .getRawMany();
-
       post.post_header = post_header;
       post.short_description = short_description;
       post.post_body = post_body;
       post.open_yn = Boolean(open_yn);
+      post.series_id = series_id ? series_id : 0;
       await postRepo.save(post);
 
       if (!tags.length) {
