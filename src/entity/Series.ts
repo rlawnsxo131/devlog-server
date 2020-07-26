@@ -2,20 +2,14 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  Index,
   CreateDateColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity('series')
-@Index('ix_id_postid', ['id', 'post_id'], { unique: true })
 export default class Series {
   @PrimaryGeneratedColumn({ unsigned: true })
   id!: number;
-
-  @Index('ix_postid')
-  @Column({ unsigned: true })
-  post_id!: number;
 
   @Column({ length: 200, type: 'varchar' })
   series_name!: string;

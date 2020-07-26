@@ -158,10 +158,6 @@ export const enrollPost: Middleware = async ctx => {
   });
 };
 
-export const getSeriesPost: Middleware = async ctx => {
-  ctx.body = 'getSeriesPost';
-};
-
 export const getSeriesPosts: Middleware = async ctx => {
   ctx.body = 'getSeriesPosts';
 };

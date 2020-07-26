@@ -1,4 +1,3 @@
--- need test
 CREATE DATABASE blog DEFAULT CHARACTER SET utf8mb4 COLLATE utf8_unicode_ci;
 
 DROP TABLE IF EXISTS admin_user;
@@ -22,27 +21,19 @@ CREATE TABLE `admin_user` (
   UNIQUE KEY `ix_email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_unicode_ci;
 
-CREATE TABLE `comment` (
+CREATE TABLE `admin_user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `post_id` int(10) unsigned NOT NULL,
-  `level` int(10) unsigned NOT NULL DEFAULT 0,
-  `has_replies` tinyint(4) NOT NULL DEFAULT 0,
-  `reply_comment_id` int(10) unsigned DEFAULT NULL,
-  `deleted` tinyint(4) NOT NULL DEFAULT 0,
-  `writer` varchar(127) COLLATE utf8_unicode_ci NOT NULL,
-  `salt` varchar(127) COLLATE utf8_unicode_ci NOT NULL,
+  `email` varchar(127) COLLATE utf8_unicode_ci NOT NULL,
   `password` varchar(127) COLLATE utf8_unicode_ci NOT NULL,
-  `email` varchar(127) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `comment` varchar(1000) COLLATE utf8_unicode_ci NOT NULL,
+  `salt` varchar(127) COLLATE utf8_unicode_ci NOT NULL,
+  `confirm_yn` tinyint(4) NOT NULL DEFAULT 0,
+  `code` varchar(127) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_at` timestamp(6) NOT NULL DEFAULT current_timestamp(6),
   `updated_at` timestamp(6) NOT NULL DEFAULT current_timestamp(6),
-  `edited_at` timestamp NULL DEFAULT NULL,
+  `user_roll` enum('MASTER','USER') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'USER',
   PRIMARY KEY (`id`),
-  KEY `ix_postid` (`post_id`),
-  KEY `ix_level` (`level`),
-  KEY `ix_replycommentid` (`reply_comment_id`),
-  KEY `ix_deleted` (`deleted`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_unicode_ci;
+  UNIQUE KEY `ix_email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `comment` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -62,9 +53,21 @@ CREATE TABLE `comment` (
   PRIMARY KEY (`id`),
   KEY `ix_postid` (`post_id`),
   KEY `ix_level` (`level`),
-  KEY `ix_replycommentid` (`reply_comment_id`),
-  KEY `ix_deleted` (`deleted`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_unicode_ci;
+  KEY `ix_replycommentid` (`reply_comment_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `post` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `post_header` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `post_body` text COLLATE utf8_unicode_ci NOT NULL,
+  `short_description` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `open_yn` tinyint(4) NOT NULL DEFAULT 0,
+  `series_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `created_at` timestamp(6) NOT NULL DEFAULT current_timestamp(6),
+  `updated_at` timestamp(6) NOT NULL DEFAULT current_timestamp(6),
+  PRIMARY KEY (`id`),
+  KEY `ix_seriesid` (`series_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `post_has_tag` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -74,18 +77,15 @@ CREATE TABLE `post_has_tag` (
   `updated_at` timestamp(6) NOT NULL DEFAULT current_timestamp(6),
   PRIMARY KEY (`id`),
   UNIQUE KEY `ix_postid_tagid` (`post_id`,`tag_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `series` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `post_id` int(10) unsigned NOT NULL,
   `series_name` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   `created_at` timestamp(6) NOT NULL DEFAULT current_timestamp(6),
   `updated_at` timestamp(6) NOT NULL DEFAULT current_timestamp(6),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `ix_id_postid` (`id`,`post_id`),
-  KEY `ix_postid` (`post_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_unicode_ci;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `subscribe` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -96,7 +96,7 @@ CREATE TABLE `subscribe` (
   `updated_at` timestamp(6) NOT NULL DEFAULT current_timestamp(6),
   PRIMARY KEY (`id`),
   UNIQUE KEY `ix_email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `tag` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -105,4 +105,4 @@ CREATE TABLE `tag` (
   `updated_at` timestamp(6) NOT NULL DEFAULT current_timestamp(6),
   PRIMARY KEY (`id`),
   UNIQUE KEY `ix_name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=134 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
