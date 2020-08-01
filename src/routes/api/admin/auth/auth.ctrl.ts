@@ -56,6 +56,7 @@ export const signIn: Middleware = async ctx => {
     ctx.cookies.set('access_token', token, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,
+      // domain: '.domain'
     });
     ctx.body = {
       email,

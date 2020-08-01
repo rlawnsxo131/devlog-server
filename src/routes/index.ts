@@ -10,7 +10,7 @@ routes.use('/(rss|atom)', rss.routes());
 routes.use('/sitemaps', sitemaps.routes());
 
 routes.get('/', ctx => {
-  ctx.body = 'hello world';
+  ctx.body = ctx.request.header;
 });
 
 export default routes;
