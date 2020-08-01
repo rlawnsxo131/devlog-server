@@ -1,11 +1,18 @@
 import { gql, IResolvers, ApolloError } from 'apollo-server-koa';
 import { getRepository } from 'typeorm';
 import Tag, { PostTag } from '../entity/Tag';
-import Post from '../entity/Post';
+import Post, { SeriesPost } from '../entity/Post';
 import PostHasTag from '../entity/PostHasTag';
 import Comment from '../entity/Comment';
+import Series from '../entity/Series';
 
 export const typeDef = gql`
+  type SeriesPost {
+    series_id: ID!
+    series_name: String!
+    post_id: ID!
+    post_header: String!
+  }
   type Post {
     id: ID!
     post_header: String!
@@ -17,6 +24,7 @@ export const typeDef = gql`
     updated_at: Date!
     tags: [String]!
     comments_count: Int!
+    series_posts: [SeriesPost]
   }
 
   extend type Query {
@@ -41,6 +49,20 @@ export const resolvers: IResolvers = {
         .getCount();
 
       return commentsCount;
+    },
+    series_posts: async (parent: Post) => {
+      let seriesPosts: Array<SeriesPost> = [];
+      if (parent.series_id) {
+        seriesPosts = await getRepository(Series)
+          .createQueryBuilder('s')
+          .select([
+            'p.series_id, s.series_name, p.id as post_id, p.post_header',
+          ])
+          .innerJoin(Post, 'p', 's.id = p.series_id')
+          .where('p.series_id = :series_id', { series_id: parent.series_id })
+          .getRawMany();
+      }
+      return seriesPosts;
     },
   },
   Query: {

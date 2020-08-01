@@ -30,7 +30,6 @@ CREATE TABLE `admin_user` (
   `code` varchar(127) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_at` timestamp(6) NOT NULL DEFAULT current_timestamp(6),
   `updated_at` timestamp(6) NOT NULL DEFAULT current_timestamp(6),
-  `user_roll` enum('MASTER','USER') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'USER',
   PRIMARY KEY (`id`),
   UNIQUE KEY `ix_email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

@@ -19,7 +19,6 @@ export const authCheck: Middleware = async ctx => {
     }
     ctx.body = {
       email: adminUser.email,
-      user_roll: adminUser.user_roll,
     };
   } catch (e) {
     ctx.throw(500, e);
@@ -53,7 +52,6 @@ export const signIn: Middleware = async ctx => {
     const token = await generateToken({
       user_id: adminUser.id,
       email,
-      user_roll: adminUser.user_roll,
     });
     ctx.cookies.set('access_token', token, {
       httpOnly: true,
@@ -61,7 +59,6 @@ export const signIn: Middleware = async ctx => {
     });
     ctx.body = {
       email,
-      user_roll: adminUser.user_roll,
     };
   } catch (e) {
     ctx.throw(500, e);

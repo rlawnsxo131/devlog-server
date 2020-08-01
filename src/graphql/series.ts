@@ -7,8 +7,6 @@ export const typeDef = gql`
   type Series {
     id: ID!
     series_name: String!
-    created_at: Date!
-    updated_at: Date!
     posts: [Post]
   }
 

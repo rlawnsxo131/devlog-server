@@ -7,11 +7,6 @@ import {
   Index,
 } from 'typeorm';
 
-export enum UserRoll {
-  MASTER = 'MASTER',
-  USER = 'USER',
-}
-
 @Entity('admin_user')
 export default class AdminUser {
   @PrimaryGeneratedColumn({ unsigned: true })
@@ -26,9 +21,6 @@ export default class AdminUser {
 
   @Column({ type: 'varchar', length: 127 })
   salt!: string;
-
-  @Column({ type: 'enum', enum: UserRoll, default: UserRoll.USER })
-  user_roll!: UserRoll;
 
   @Column({ default: false })
   confirm_yn!: boolean;
