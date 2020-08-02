@@ -1,9 +1,10 @@
 import { Middleware } from 'koa';
 import { getRepository } from 'typeorm';
 import Series from '../../../../entity/Series';
+import Post from '../../../../entity/Post';
 
 export const getSeries: Middleware = async ctx => {
-  const series_list = await getRepository(Series).find({});
+  const series_list = await getRepository(Series).find();
   ctx.body = {
     series_list,
   };
@@ -25,5 +26,18 @@ export const enrollSeries: Middleware = async ctx => {
   await seriesRepo.save(series);
   ctx.body = {
     series,
+  };
+};
+
+export const getSeriesPosts: Middleware = async ctx => {
+  const series_posts = await getRepository(Series)
+    .createQueryBuilder('s')
+    .select(['s.id as series_id, s.series_name, p.id, p.post_header'])
+    .innerJoin(Post, 'p', 's.id = p.series_id')
+    .orderBy('s.id, p.id')
+    .getRawMany();
+
+  ctx.body = {
+    series_posts,
   };
 };

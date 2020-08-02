@@ -9,7 +9,6 @@ export const authCheck: Middleware = async ctx => {
     ctx.status = 400;
     return;
   }
-
   try {
     const adminRepo = getRepository(AdminUser);
     const adminUser = await adminRepo.findOne(ctx.state.user_id);
