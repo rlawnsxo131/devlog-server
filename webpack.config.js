@@ -1,4 +1,3 @@
-// webpack.config.js
 const path = require('path');
 const slsw = require('serverless-webpack');
 const nodeExternals = require('webpack-node-externals');
@@ -12,12 +11,12 @@ module.exports = {
   externals: [nodeExternals()],
   resolve: {
     modules: ['node_modules'],
-    extensions: ['.js', '.jsx', '.json', '.ts', '.tsx']
+    extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
   },
   output: {
     libraryTarget: 'commonjs',
     path: path.join(__dirname, '.webpack'),
-    filename: '[name].js'
+    filename: '[name].js',
   },
   module: {
     rules: [
@@ -26,9 +25,9 @@ module.exports = {
         test: /\.tsx?$/,
         loader: 'ts-loader',
         options: {
-          transpileOnly: true
-        }
-      }
-    ]
-  }
+          transpileOnly: true,
+        },
+      },
+    ],
+  },
 };
