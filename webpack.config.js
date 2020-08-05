@@ -7,7 +7,7 @@ module.exports = {
   entry: slsw.lib.entries,
   target: 'node',
   mode: slsw.lib.webpack.isLocal ? 'development' : 'production',
-  // webpack의 critical warning 메시지를 피하기 위한 용도
+  // webpack의 critical warning pass
   externals: [nodeExternals()],
   resolve: {
     modules: ['node_modules'],
