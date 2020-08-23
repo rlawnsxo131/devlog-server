@@ -23,7 +23,7 @@ export function groupByObjectId<T>(
   return obj;
 }
 
-export async function createSortAndHash(
+export async function createSaltAndHash(
   target: string
 ): Promise<{ salt: string; hash: string }> {
   const salt = await randomBytesPromise(64);

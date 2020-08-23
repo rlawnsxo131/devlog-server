@@ -1,6 +1,6 @@
 import { gql, IResolvers, ApolloError } from 'apollo-server-koa';
 import { getRepository } from 'typeorm';
-import { createSortAndHash, decrypt } from '../lib/utils';
+import { createSaltAndHash, decrypt } from '../lib/utils';
 import Comment from '../entity/Comment';
 
 export const typeDef = gql`
@@ -124,7 +124,7 @@ export const resolvers: IResolvers = {
       }
 
       try {
-        const { salt, hash } = await createSortAndHash(password);
+        const { salt, hash } = await createSaltAndHash(password);
         newComment.post_id = post_id;
         newComment.writer = writer;
         newComment.salt = salt;
