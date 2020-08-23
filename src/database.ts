@@ -19,20 +19,20 @@ export default class Database {
     const connectionOptions: ConnectionOptions = {
       name: 'default',
       type: 'mariadb',
-      host: process.env.DEV_DB_HOST,
-      port: Number(process.env.DEV_DB_PORT),
-      username: process.env.DEV_DB_USERNAME,
-      password: process.env.DEV_DB_PASSWORD,
-      database: process.env.DEV_DB_DATABASE,
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT),
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
       charset: 'utf8mb4_unicode_ci',
       connectTimeout: 10000,
-      logging: ['error'],
-      // logging: ['query'],
+      // logging: ['error'],
+      logging: ['query'],
       // timezone: '-09:00',
       extra: {
         connectionLimit: 10,
       },
-      synchronize: true,
+      synchronize: false,
       entities,
     };
 

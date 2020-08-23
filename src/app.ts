@@ -2,15 +2,15 @@ import * as Koa from 'koa';
 import * as bodyParser from 'koa-bodyparser';
 import * as logger from 'koa-logger';
 import * as helmet from 'koa-helmet';
+import initializeConfig from './env';
 import { ApolloServer, ApolloError } from 'apollo-server-koa';
-import { config } from 'dotenv';
 import schema from './graphql/schema';
 import createLoaders from './lib/createLoaders';
 import routes from './routes';
 import { checkToken } from './lib/middlewares/jwtMiddleware';
 import cors from './lib/middlewares/cors';
 
-config();
+initializeConfig();
 const app = new Koa();
 
 /* set up middlewares */
