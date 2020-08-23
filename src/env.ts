@@ -7,7 +7,7 @@ export default function initializeConfig() {
   config({
     path: path.resolve(
       process.cwd(),
-      NODE_ENV === 'development' ? '.env.development' : '.env'
+      NODE_ENV === 'development' ? '.env.development' : '.env.production'
     ),
   });
 }
