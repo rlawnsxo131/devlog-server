@@ -80,13 +80,7 @@ export const enrollPost: Middleware = async ctx => {
         ctx.status = 400;
         return;
       }
-      const prevTags = await tm
-        .getRepository(Tag)
-        .createQueryBuilder('t')
-        .select('t.id, t.name, pht.id as post_has_tag_id')
-        .innerJoin(PostHasTag, 'pht', 't.id = pht.tag_id')
-        .where('pht.post_id = :id', { id: post.id })
-        .getRawMany();
+
       post.post_header = post_header;
       post.short_description = short_description;
       post.post_body = post_body;
@@ -103,6 +97,14 @@ export const enrollPost: Middleware = async ctx => {
       }
 
       if (tags.length) {
+        const prevTags = await tm
+          .getRepository(Tag)
+          .createQueryBuilder('t')
+          .select('t.id, t.name, pht.id as post_has_tag_id')
+          .innerJoin(PostHasTag, 'pht', 't.id = pht.tag_id')
+          .where('pht.post_id = :id', { id: post.id })
+          .getRawMany();
+
         // insert tag, post_has_tag
         const tagList: Array<{ name: string }> = tags
           .filter(v => v.length)
