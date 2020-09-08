@@ -40,7 +40,7 @@ export default class Database {
   }
 
   async getConnection(): Promise<Connection> {
-    const CONNECTION_NAME = `default`;
+    const CONNECTION_NAME = 'default';
     if (this.connectionManager.has(CONNECTION_NAME)) {
       const connection = this.connectionManager.get(CONNECTION_NAME);
       try {

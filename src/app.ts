@@ -1,7 +1,6 @@
 import * as Koa from 'koa';
 import * as bodyParser from 'koa-bodyparser';
 import * as logger from 'koa-logger';
-import * as helmet from 'koa-helmet';
 import initializeConfig from './env';
 import { ApolloServer, ApolloError } from 'apollo-server-koa';
 import schema from './graphql/schema';
@@ -14,7 +13,6 @@ initializeConfig();
 const app = new Koa();
 
 /* set up middlewares */
-app.use(helmet());
 app.use(logger());
 app.use(bodyParser());
 app.use(checkToken);

@@ -9,8 +9,8 @@ routes.use('/api', api.routes());
 routes.use('/(rss|atom)', rss.routes());
 routes.use('/sitemaps', sitemaps.routes());
 
-routes.get('/', ctx => {
-  ctx.body = ctx.request.header;
+routes.get('/health', ctx => {
+  ctx.body = 'Hello world';
 });
 
 export default routes;
