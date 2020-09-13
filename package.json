@@ -18,7 +18,6 @@
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.0",
     "koa-bodyparser": "^4.3.0",
-    "koa-helmet": "^5.2.0",
     "koa-logger": "^3.2.1",
     "lodash": "^4.17.20",
     "mysql2": "^2.1.0",
