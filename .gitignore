@@ -12,6 +12,7 @@
 /dist
 /.chache
 /.webpack
+/.serverless
 
 # misc
 .DS_Store

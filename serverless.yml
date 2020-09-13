@@ -3,6 +3,7 @@ service:
 
 plugins:
   - serverless-webpack
+  - serverless-dotenv-plugin
   - serverless-offline
 
 custom:
@@ -15,11 +16,29 @@ provider:
   region: ap-northeast-2
   stage: dev
 
+  environment:
+    PORT: ${env:PORT}
+    SECRET_KEY: ${env:SECRET_KEY}
+    DB_HOST: ${env:DB_HOST}
+    DB_PORT: ${env:DB_PORT}
+    DB_USERNAME: ${env:DB_USERNAME}
+    DB_DATABASE: ${env:DB_DATABASE}
+    DB_PASSWORD: ${env:DB_PASSWORD}
+
+  # iamRoleStatements:
+  #   - Effect: Allow
+  
+  vpc:
+    securityGroupIds:
+      - ${env:AWS_SECURITY_GROUP_ID}
+    subnetIds:
+      - ${env:AWS_SUBNET_ID}
+
 functions:
   app:
     handler: src/serverless.handler
     environment:
-      SLS_DEBUG: true
+      # SLS_DEBUG: true
     events:
       - http:
           path: /
