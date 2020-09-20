@@ -38,7 +38,7 @@ functions:
   app:
     handler: src/serverless.handler
     environment:
-      # SLS_DEBUG: true
+      SLS_DEBUG: ${env:SERVERLESS_DEBUG}
     events:
       - http:
           path: /

@@ -36,7 +36,7 @@ export default class Database {
       entities,
     };
 
-    return await createConnection(connectionOptions);
+    return createConnection(connectionOptions);
   }
 
   async getConnection(): Promise<Connection> {
@@ -50,6 +50,7 @@ export default class Database {
       } catch (e) {}
       return connection.connect();
     }
-    return await this.connect();
+    return this.connect();
   }
 }
+export const mysql = require('mysql2');

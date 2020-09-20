@@ -5,12 +5,11 @@ import sitemaps from './sitemaps';
 
 const routes = new Router();
 
+routes.get('/hello', ctx => {
+  ctx.body = 'Hello world';
+});
 routes.use('/api', api.routes());
 routes.use('/(rss|atom)', rss.routes());
 routes.use('/sitemaps', sitemaps.routes());
-
-routes.get('/health', ctx => {
-  ctx.body = 'Hello world';
-});
 
 export default routes;

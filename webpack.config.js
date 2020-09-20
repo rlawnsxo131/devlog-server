@@ -1,13 +1,14 @@
 const path = require('path');
 const slsw = require('serverless-webpack');
 const nodeExternals = require('webpack-node-externals');
+const mysql = require('mysql2');
 
 module.exports = {
   // entry를 따로 설정하지 않아도 됨
   entry: slsw.lib.entries,
   target: 'node',
   mode: slsw.lib.webpack.isLocal ? 'development' : 'production',
-  // webpack의 critical warning pass
+  // webpack critical warning pass
   externals: [nodeExternals()],
   resolve: {
     modules: ['node_modules'],
