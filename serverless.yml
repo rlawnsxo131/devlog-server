@@ -17,7 +17,6 @@ provider:
   stage: dev
 
   environment:
-    PORT: ${env:PORT}
     SECRET_KEY: ${env:SECRET_KEY}
     DB_HOST: ${env:DB_HOST}
     DB_PORT: ${env:DB_PORT}
@@ -32,7 +31,9 @@ provider:
     securityGroupIds:
       - ${env:AWS_SECURITY_GROUP_ID}
     subnetIds:
-      - ${env:AWS_SUBNET_ID}
+      - ${env:AWS_SUBNET_ID_FIRST}
+      - ${env:AWS_SUBNET_ID_SECOND}
+      - ${env:AWS_SUBNET_ID_THIRD}
 
 functions:
   app:
