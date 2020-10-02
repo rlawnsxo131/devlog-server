@@ -1,4 +1,5 @@
 import * as jwt from 'jsonwebtoken';
+import { Context } from 'koa';
 
 export function generateToken(
   payload: any,
@@ -30,4 +31,23 @@ export function decodeToken<T>(token: string): Promise<T> {
       resolve(decoded as any);
     });
   });
+}
+
+export function setTokenCookie(ctx: Context, token: string): void {
+  const { NODE_ENV } = process.env;
+
+  if (NODE_ENV === 'development') {
+    ctx.cookies.set('access_token', token, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    });
+  }
+
+  if (NODE_ENV === 'production') {
+    ctx.cookies.set('access_token', token, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+      domain: '.juntae.kim',
+    });
+  }
 }

@@ -2,7 +2,7 @@ import { Middleware } from 'koa';
 import { getRepository } from 'typeorm';
 import AdminUser from '../../../../entity/AdminUser';
 import { normalizedString, decrypt } from '../../../../lib/utils';
-import { generateToken } from '../../../../lib/token';
+import { generateToken, setTokenCookie } from '../../../../lib/token';
 
 export const authCheck: Middleware = async ctx => {
   if (!ctx.state.user_id) {
@@ -58,12 +58,7 @@ export const signIn: Middleware = async ctx => {
       user_id: adminUser.id,
       email,
     });
-
-    ctx.cookies.set('access_token', token, {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-      domain: '.juntae.kim',
-    });
+    setTokenCookie(ctx, token);
 
     ctx.body = {
       email,
