@@ -5,6 +5,7 @@ export const checkUser: Middleware = async (ctx, next) => {
     return await next();
   }
   if (!ctx.state.user_id) {
+    ctx.cookies.set('access_token', '', { maxAge: 0, httpOnly: true });
     ctx.status = 400;
     return;
   }

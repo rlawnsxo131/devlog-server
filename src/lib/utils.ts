@@ -26,9 +26,9 @@ export function groupByObjectId<T>(
 export async function createSaltAndHash(
   target: string
 ): Promise<{ salt: string; hash: string }> {
-  const salt = await randomBytesPromise(64);
+  const salt = await randomBytesPromise(32);
   const stringSalt = salt.toString('base64');
-  const hash = (await scryptPromise(target, stringSalt, 64)) as ReturnType<
+  const hash = (await scryptPromise(target, stringSalt, 32)) as ReturnType<
     () => Buffer
   >;
   return {
@@ -37,8 +37,14 @@ export async function createSaltAndHash(
   };
 }
 
-export async function decrypt(target: string, salt: string) {
-  const result = (await scryptPromise(target, salt, 64)) as ReturnType<
+export async function decrypt(
+  target?: string,
+  salt?: string
+): Promise<string | undefined> {
+  if (!target || !salt) {
+    return undefined;
+  }
+  const result = (await scryptPromise(target, salt, 32)) as ReturnType<
     () => Buffer
   >;
   return result.toString('base64');

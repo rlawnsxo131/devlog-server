@@ -6,7 +6,7 @@ export function generateToken(
 ): Promise<string> {
   const secretKey = process.env.SECRET_KEY || undefined;
   const jwtOptions: jwt.SignOptions = {
-    issuer: 'development-log',
+    issuer: 'devlog.juntae.kim',
     // 이건 나중에 분기
     subject: 'auth',
     expiresIn: '7d',

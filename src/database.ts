@@ -28,8 +28,8 @@ export default class Database {
       database: process.env.DB_DATABASE,
       charset: 'utf8mb4_unicode_ci',
       connectTimeout: 10000,
-      // logging: ['error'],
-      logging: ['query'],
+      logging: ['error'],
+      // logging: ['query'],
       // timezone: '-09:00',
       extra: {
         connectionLimit: 10,

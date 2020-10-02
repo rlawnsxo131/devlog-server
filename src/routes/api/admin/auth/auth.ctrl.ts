@@ -9,10 +9,11 @@ export const authCheck: Middleware = async ctx => {
     ctx.status = 400;
     return;
   }
+
   try {
     const adminRepo = getRepository(AdminUser);
     const adminUser = await adminRepo.findOne(ctx.state.user_id);
-    if (!adminUser) {
+    if (!adminUser || !adminUser.confirm_yn) {
       ctx.status = 400;
       return;
     }
@@ -48,15 +49,22 @@ export const signIn: Middleware = async ctx => {
       return;
     }
 
+    if (!adminUser.confirm_yn) {
+      ctx.status = 400;
+      return;
+    }
+
     const token = await generateToken({
       user_id: adminUser.id,
       email,
     });
+
     ctx.cookies.set('access_token', token, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,
-      // domain: '.domain'
+      domain: '.juntae.kim',
     });
+
     ctx.body = {
       email,
     };
