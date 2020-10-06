@@ -1,7 +1,6 @@
 const path = require('path');
 const slsw = require('serverless-webpack');
 const nodeExternals = require('webpack-node-externals');
-const mysql = require('mysql2');
 
 module.exports = {
   // entry를 따로 설정하지 않아도 됨
