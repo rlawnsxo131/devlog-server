@@ -73,7 +73,7 @@ export const resolvers: IResolvers = {
         .createQueryBuilder('c')
         .where('c.post_id = :post_id', { post_id })
         .andWhere('c.level = 0')
-        .andWhere('(c.deleted = false or c.has_replies = true)')
+        .andWhere('(c.deleted = false OR c.has_replies = true)')
         .orderBy('c.id', 'ASC')
         .getMany();
 
@@ -134,7 +134,7 @@ export const resolvers: IResolvers = {
         await commentRepo.save(newComment);
         return newComment;
       } catch (e) {
-        throw new ApolloError('CREATE_COMMENT ERROR');
+        throw new ApolloError(`CREATE_COMMENT ERROR: ${e}`);
       }
     },
     updateComment: async (_, args) => {
@@ -151,7 +151,7 @@ export const resolvers: IResolvers = {
         await commentRepo.save(targetComment);
         return true;
       } catch (e) {
-        throw new ApolloError('Update Comment Error');
+        throw new ApolloError(`Update Comment Error: ${e}`);
       }
     },
     removeComment: async (_, { comment_id }) => {
@@ -192,7 +192,7 @@ export const resolvers: IResolvers = {
         }
         return true;
       } catch (e) {
-        throw new ApolloError('Remove Comment Error');
+        throw new ApolloError(`Remove Comment Error: ${e}`);
       }
     },
   },

@@ -154,7 +154,7 @@ export const enrollPost: Middleware = async ctx => {
         `
         DELETE
         FROM t USING tag t
-        LEFT OUTER JOIN post_has_tag pht on t.id = pht.tag_id
+        LEFT OUTER JOIN post_has_tag pht ON t.id = pht.tag_id
         WHERE pht.id IS NULL
         `
       );

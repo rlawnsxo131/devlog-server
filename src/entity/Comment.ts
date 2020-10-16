@@ -62,7 +62,7 @@ export const createCommentsLoader = () =>
     const subComments = await getRepository(Comment)
       .createQueryBuilder('c')
       .where('c.reply_comment_id IN (:commentIds)', { commentIds })
-      .andWhere('(c.deleted = false or c.has_replies = true)')
+      .andWhere('(c.deleted = false OR c.has_replies = true)')
       .orderBy('c.id', 'ASC')
       .getMany();
 

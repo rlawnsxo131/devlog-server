@@ -44,7 +44,7 @@ export const resolvers: IResolvers = {
       const commentsCount = await getRepository(Comment)
         .createQueryBuilder('c')
         .where('c.post_id = :post_id', { post_id: parent.id })
-        .andWhere('(c.deleted = false or c.has_replies = true)')
+        .andWhere('(c.deleted = false OR c.has_replies = true)')
         .orderBy('c.id', 'ASC')
         .getCount();
 
@@ -77,7 +77,7 @@ export const resolvers: IResolvers = {
         }
         return post;
       } catch (e) {
-        throw new ApolloError('GET_POST ERROR');
+        throw new ApolloError(`GET_POST ERROR: ${e}`);
       }
     },
     posts: async (_, { tag }: { tag?: string }) => {
@@ -96,7 +96,7 @@ export const resolvers: IResolvers = {
         const posts = await query.getMany();
         return posts;
       } catch (e) {
-        throw new ApolloError('GET_POSTS ERROR');
+        throw new ApolloError(`GET_POSTS ERROR: ${e}`);
       }
     },
   },
