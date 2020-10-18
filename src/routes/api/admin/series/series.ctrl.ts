@@ -32,9 +32,11 @@ export const enrollSeries: Middleware = async ctx => {
 export const getSeriesPosts: Middleware = async ctx => {
   const series_posts = await getRepository(Series)
     .createQueryBuilder('s')
-    .select(['s.id as series_id, s.series_name, p.id, p.post_header'])
+    .select([
+      's.id as series_id, s.series_name, p.id, p.post_header, p.released_at',
+    ])
     .innerJoin(Post, 'p', 's.id = p.series_id')
-    .orderBy('s.id, p.id')
+    .orderBy('s.id, p.released_at')
     .getRawMany();
 
   ctx.body = {

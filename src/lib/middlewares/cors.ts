@@ -3,7 +3,7 @@ import { Middleware } from 'koa';
 const cors: Middleware = (ctx, next) => {
   const allowedHosts = [
     /^https:\/\/devlog.juntae.kim$/,
-    /^https:\/\/john-admin.juntae.kim/,
+    /^https:\/\/john-admin.juntae.kim$/,
   ];
 
   if (process.env.NODE_ENV === 'development') {

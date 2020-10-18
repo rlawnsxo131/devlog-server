@@ -24,7 +24,11 @@ export const resolvers: IResolvers = {
   },
   Query: {
     series: async _ => {
-      const series = await getRepository(Series).find();
+      const series = await getRepository(Series).find({
+        order: {
+          id: 'DESC',
+        },
+      });
       return series;
     },
   },

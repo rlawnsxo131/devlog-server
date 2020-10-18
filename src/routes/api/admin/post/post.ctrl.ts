@@ -1,5 +1,5 @@
 import { Middleware } from 'koa';
-import { getRepository, In, getManager, EntityManager } from 'typeorm';
+import { getRepository, EntityManager, getConnection } from 'typeorm';
 import Post from '../../../../entity/Post';
 import Tag from '../../../../entity/Tag';
 import PostHasTag from '../../../../entity/PostHasTag';
@@ -71,7 +71,7 @@ export const enrollPost: Middleware = async ctx => {
   } = ctx.request.body as EnrollPostArgs;
 
   // start transaction
-  await getManager().transaction(async (tm: EntityManager) => {
+  await getConnection().transaction(async (tm: EntityManager) => {
     try {
       const postRepo = tm.getRepository(Post);
       const postHasTagRepo = tm.getRepository(PostHasTag);
@@ -85,6 +85,7 @@ export const enrollPost: Middleware = async ctx => {
       post.short_description = short_description;
       post.post_body = post_body;
       post.open_yn = Boolean(open_yn);
+      post.released_at = Boolean(open_yn) ? new Date() : undefined;
       post.series_id = series_id ? series_id : 0;
       await postRepo.save(post);
 
@@ -106,34 +107,14 @@ export const enrollPost: Middleware = async ctx => {
           .getRawMany();
 
         // insert tag, post_has_tag
-        const tagList: Array<{ name: string }> = tags
-          .filter(v => v.length)
-          .map(v => ({ name: v }));
-        await tm
-          .createQueryBuilder()
-          .insert()
-          .into(Tag)
-          .orIgnore()
-          .values(tagList)
-          .execute();
-        const insertTags = await tm.getRepository(Tag).find({
-          where: {
-            name: In([tags]),
-          },
-        });
-        const insertPostHasTagList = insertTags.map(tag => {
+        const tagsData = await Promise.all(tags.map(Tag.findOrCreate));
+        const insertPostHasTagList = tagsData.map(tag => {
           return {
             post_id: post.id,
             tag_id: tag.id,
           };
         });
-        await tm
-          .createQueryBuilder()
-          .insert()
-          .into(PostHasTag)
-          .orIgnore()
-          .values(insertPostHasTagList)
-          .execute();
+        await Promise.all(insertPostHasTagList.map(PostHasTag.findOrCreate));
 
         // delete post_has_tag
         const deletePostHasTagIds = prevTags

@@ -5,7 +5,7 @@ import {
   Index,
   CreateDateColumn,
   UpdateDateColumn,
-  getRepository
+  getRepository,
 } from 'typeorm';
 import * as DataLoader from 'dataloader';
 import { groupByObjectId } from '../lib/utils';
@@ -25,6 +25,18 @@ export default class Tag {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at!: Date;
+
+  static async findOrCreate(name: string) {
+    const tagRepo = getRepository(Tag);
+    const tag = await tagRepo.findOne({ name });
+    if (tag) {
+      return tag;
+    }
+    const newTag = new Tag();
+    newTag.name = name;
+    await tagRepo.save(newTag);
+    return newTag;
+  }
 }
 
 export type PostTag = { post_id: number; name: string };

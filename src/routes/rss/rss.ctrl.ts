@@ -14,7 +14,7 @@ function createFeedFormat(post: Post): Item {
     title: post.post_header,
     description: marked(post.post_body).replace(/[\u001C-\u001F\u0008]/gu, ''),
     id: link,
-    date: post.updated_at,
+    date: post.released_at || post.updated_at,
     author: [
       {
         name: 'juntae',
@@ -30,7 +30,7 @@ export const getAllFeed: Middleware = async ctx => {
       open_yn: true,
     },
     order: {
-      id: 'DESC',
+      released_at: 'DESC',
     },
     skip: 0,
     take: 20,
@@ -42,7 +42,7 @@ export const getAllFeed: Middleware = async ctx => {
     link: 'https://devlog.juntae.kim/',
     id: 'https://devlog.juntae.kim/',
     image: 'https://image-devlog.juntae.kim/logo/devlog.png',
-    updated: posts[0]?.updated_at,
+    updated: posts[0]?.released_at,
     copyright: 'Copyright (C) 2020. DevLog. All rights reserved.',
     feed: 'https://api-devlog.juntae.kim/rss',
   });
@@ -62,7 +62,7 @@ export const getTagFeed: Middleware = async ctx => {
     .innerJoin(Tag, 't', 'pht.tag_id = t.id')
     .where('p.open_yn IS TRUE')
     .andWhere('t.name = :tag', { tag })
-    .orderBy('p.id', 'DESC')
+    .orderBy('p.released_at', 'DESC')
     .limit(20)
     .getRawMany();
 
@@ -72,7 +72,7 @@ export const getTagFeed: Middleware = async ctx => {
     link: `https://devlog.juntae.kim/posts/${tag}`,
     id: `https://devlog.juntae.kim/posts/${tag}`,
     image: 'https://image-devlog.juntae.kim/logo/devlog.png',
-    updated: posts[0]?.updated_at,
+    updated: posts[0]?.released_at,
     copyright: 'Copyright (C) 2020. DevLog. All rights reserved.',
     feed: 'https://api-devlog.juntae.kim/rss',
   });

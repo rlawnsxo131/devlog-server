@@ -35,9 +35,12 @@ export default class Post {
   @CreateDateColumn({ type: 'timestamp' })
   created_at!: Date;
 
-  @Index('ix_updatedat')
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at!: Date;
+
+  @Index('ix_releasedat')
+  @Column({ type: 'timestamp', nullable: true })
+  released_at?: Date;
 }
 
 export type SeriesPost = { id: number; series_id: number; post_header: string };
@@ -45,9 +48,11 @@ export const createPostsLoader = () =>
   new DataLoader<number, Array<SeriesPost>>(async seriesIds => {
     const posts = await getRepository(Series)
       .createQueryBuilder('s')
-      .select(['p.id, p.series_id, p.post_header'])
+      .select(['p.id, p.series_id, p.post_header, p.released_at'])
       .innerJoin(Post, 'p', 's.id = p.series_id')
-      .where('p.series_id IN (:seriesIds)', { seriesIds })
+      .where('p.open_yn IS TRUE')
+      .andWhere('p.series_id IN (:seriesIds)', { seriesIds })
+      .orderBy('p.released_at', 'ASC')
       .getRawMany();
 
     const groupingObj = groupByObjectId<SeriesPost>(

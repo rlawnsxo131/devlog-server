@@ -51,3 +51,22 @@ export function setTokenCookie(ctx: Context, token: string): void {
     });
   }
 }
+
+export function removeTokenCookie(ctx: Context): void {
+  const { NODE_ENV } = process.env;
+
+  if (NODE_ENV === 'development') {
+    ctx.cookies.set('access_token', '', {
+      maxAge: 0,
+      httpOnly: true,
+    });
+  }
+
+  if (NODE_ENV === 'production') {
+    ctx.cookies.set('access_token', '', {
+      maxAge: 0,
+      httpOnly: true,
+      domain: '.juntae.kim',
+    });
+  }
+}

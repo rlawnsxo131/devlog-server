@@ -78,11 +78,11 @@ export const postsSitemap: Middleware = async ctx => {
   try {
     const posts = await getRepository(Post).find({
       where: {
-        updated_at: Between(
+        open_yn: true,
+        relaeased_at: Between(
           `${format(startDate, 'yyyy-MM-dd')} 00:00:00`,
           `${format(endDate, 'yyyy-MM-dd')} 23:59:59`
         ),
-        open_yn: true,
       },
       order: {
         id: 'DESC',

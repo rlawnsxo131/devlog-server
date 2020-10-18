@@ -22,6 +22,7 @@ export const typeDef = gql`
     series_id: Int!
     created_at: Date!
     updated_at: Date!
+    released_at: Date
     tags: [String]!
     comments_count: Int!
     series_posts: [SeriesPost]
@@ -86,9 +87,9 @@ export const resolvers: IResolvers = {
           .createQueryBuilder('p')
           .leftJoin(PostHasTag, 'pht', 'p.id = pht.post_id')
           .leftJoin(Tag, 't', 't.id = pht.tag_id')
-          .where('open_yn = true')
+          .where('open_yn IS TRUE')
           .groupBy('p.id')
-          .orderBy('p.id', 'DESC');
+          .orderBy('p.released_at', 'DESC');
 
         if (tag && tag !== 'undefined') {
           query.andWhere('t.name = :tag', { tag });

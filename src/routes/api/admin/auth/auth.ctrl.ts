@@ -2,7 +2,11 @@ import { Middleware } from 'koa';
 import { getRepository } from 'typeorm';
 import AdminUser from '../../../../entity/AdminUser';
 import { normalizedString, decrypt } from '../../../../lib/utils';
-import { generateToken, setTokenCookie } from '../../../../lib/token';
+import {
+  generateToken,
+  removeTokenCookie,
+  setTokenCookie,
+} from '../../../../lib/token';
 
 export const authCheck: Middleware = async ctx => {
   if (!ctx.state.user_id) {
@@ -73,6 +77,6 @@ export const signOut: Middleware = async ctx => {
     ctx.status = 400;
     return;
   }
-  ctx.cookies.set('access_token', '', { maxAge: 0, httpOnly: true });
+  removeTokenCookie(ctx);
   ctx.status = 204;
 };

@@ -33,7 +33,7 @@ export default class Database {
       extra: {
         connectionLimit: 10,
       },
-      synchronize: false,
+      synchronize: true,
       entities,
     };
 
