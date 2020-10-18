@@ -80,12 +80,19 @@ export const enrollPost: Middleware = async ctx => {
         ctx.status = 400;
         return;
       }
+      let released_at = undefined;
+      if (open_yn && !post.released_at) {
+        released_at = new Date();
+      }
+      if (post.released_at) {
+        released_at = post.released_at;
+      }
 
       post.post_header = post_header;
       post.short_description = short_description;
       post.post_body = post_body;
-      post.open_yn = Boolean(open_yn);
-      post.released_at = Boolean(open_yn) ? new Date() : undefined;
+      post.open_yn = open_yn;
+      post.released_at = released_at;
       post.series_id = series_id ? series_id : 0;
       await postRepo.save(post);
 
