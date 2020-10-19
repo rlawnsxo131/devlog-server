@@ -1,22 +1,24 @@
 import * as Koa from 'koa';
 import * as bodyParser from 'koa-bodyparser';
 import * as logger from 'koa-logger';
-import initializeConfig from './env';
-import { ApolloServer, ApolloError } from 'apollo-server-koa';
-import schema from './graphql/schema';
-import createLoaders from './lib/createLoaders';
 import routes from './routes';
+import schema from './graphql/schema';
+import { ApolloServer, ApolloError } from 'apollo-server-koa';
+import createLoaders from './lib/createLoaders';
+import initializeConfig from './env';
 import { checkToken } from './lib/middlewares/jwtMiddleware';
 import cors from './lib/middlewares/cors';
+import compress from './lib/middlewares/compress';
 
 initializeConfig();
 const app = new Koa();
 
 /* set up middlewares */
 app.use(logger());
+app.use(cors);
 app.use(bodyParser());
 app.use(checkToken);
-app.use(cors);
+app.use(compress);
 app.use(routes.routes()).use(routes.allowedMethods());
 
 const apollo = new ApolloServer({
