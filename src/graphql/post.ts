@@ -61,6 +61,7 @@ export const resolvers: IResolvers = {
           ])
           .innerJoin(Post, 'p', 's.id = p.series_id')
           .where('p.series_id = :series_id', { series_id: parent.series_id })
+          .andWhere('p.open_yn IS TRUE')
           .getRawMany();
       }
       return seriesPosts;
@@ -71,15 +72,11 @@ export const resolvers: IResolvers = {
       if (!id) {
         throw new ApolloError('NOT FOUND post_id');
       }
-      try {
-        const post = await getRepository(Post).findOne(id);
-        if (!post) {
-          throw new ApolloError('NOT FOUND POST');
-        }
-        return post;
-      } catch (e) {
-        throw new ApolloError(`GET_POST ERROR: ${e}`);
+      const post = await getRepository(Post).findOne(id);
+      if (!post || !post.open_yn) {
+        throw new ApolloError('NOT FOUND POST');
       }
+      return post;
     },
     posts: async (_, { tag }: { tag?: string }) => {
       try {
