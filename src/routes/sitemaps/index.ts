@@ -5,6 +5,6 @@ const sitemaps = new Router();
 
 sitemaps.get('/index.xml', sitemapIndex);
 sitemaps.get('/general.xml', generalSitemap);
-sitemaps.get('/posts-:month.xml', postsSitemap);
+sitemaps.get('/posts.xml', postsSitemap);
 
 export default sitemaps;

@@ -75,26 +75,28 @@ export const generalSitemap: Middleware = ctx => {
 };
 
 export const postsSitemap: Middleware = async ctx => {
-  const month = ctx.params.month;
-  const startDate = new Date(`${month}-01`);
-  const endDate = lastDayOfMonth(startDate);
+  const date = new Date();
+  const startDate = `${format(date, 'yyyy-MM-01')} 00:00:00`;
+  const endDate = lastDayOfMonth(date);
 
   try {
     const posts = await getRepository(Post).find({
       where: {
         open_yn: true,
         released_at: Between(
-          `${format(startDate, 'yyyy-MM-dd')} 00:00:00`,
+          startDate,
           `${format(endDate, 'yyyy-MM-dd')} 23:59:59`
         ),
       },
       order: {
-        id: 'DESC',
+        released_at: 'DESC',
       },
+      skip: 0,
+      take: 50,
     });
     const links: Array<SitemapLink> = posts.map(post => ({
       location: `https://devlog.juntae.kim/post/${post.post_header}?id=${post.id}`,
-      changefreq: 'weekly',
+      changefreq: 'daily',
     }));
     ctx.set('Content-Type', 'text/xml');
     ctx.body = generateSitemap(links);
