@@ -59,6 +59,10 @@ export const generalSitemap: Middleware = ctx => {
   const links: SitemapLink[] = [
     {
       location: 'https://devlog.juntae.kim/',
+      changefreq: 'always',
+    },
+    {
+      location: 'https://devlog.juntae.kim/series',
       changefreq: 'daily',
     },
     {
@@ -79,7 +83,7 @@ export const postsSitemap: Middleware = async ctx => {
     const posts = await getRepository(Post).find({
       where: {
         open_yn: true,
-        relaeased_at: Between(
+        released_at: Between(
           `${format(startDate, 'yyyy-MM-dd')} 00:00:00`,
           `${format(endDate, 'yyyy-MM-dd')} 23:59:59`
         ),
