@@ -29,7 +29,7 @@ export const typeDef = gql`
   }
 
   extend type Query {
-    post(id: ID!): Post!
+    post(id: ID!, post_header: String!): Post!
     posts(tag: String): [Post]!
   }
 `;
@@ -68,13 +68,20 @@ export const resolvers: IResolvers = {
     },
   },
   Query: {
-    post: async (_, { id }: { id: number }) => {
+    post: async (
+      _,
+      { id, post_header }: { id: number; post_header: string }
+    ) => {
       if (!id) {
-        throw new ApolloError('NOT FOUND post_id');
+        throw new ApolloError('Not Found post_id');
       }
       const post = await getRepository(Post).findOne(id);
       if (!post || !post.open_yn) {
-        throw new ApolloError('NOT FOUND POST');
+        throw new ApolloError('Not Found POST');
+      }
+
+      if (post.post_header !== post_header) {
+        throw new ApolloError('Not Found POST');
       }
       return post;
     },
@@ -91,10 +98,16 @@ export const resolvers: IResolvers = {
         if (tag && tag !== 'undefined') {
           query.andWhere('t.name = :tag', { tag });
         }
+
         const posts = await query.getMany();
+
+        if (tag && !posts.length) {
+          throw new ApolloError('Not Found posts');
+        }
+
         return posts;
       } catch (e) {
-        throw new ApolloError(`GET_POSTS ERROR: ${e}`);
+        throw new ApolloError(e);
       }
     },
   },
