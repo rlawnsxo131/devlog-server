@@ -1,0 +1,18 @@
+# devlog-server
+## Personal Development blog by John
+### Tech Stack
+* Typescript
+* Serverless Framework
+* Node.js
+  * Koa.js
+* GraphQL
+  * Apollo Server
+* AWS
+  * EC2
+  * S3
+  * Lambda
+  * API Gateway
+  * Route53
+  * CloudFront
+### Clientside Repository
+<https://github.com/rlawnsxo131/devlog-client>
