@@ -1,4 +1,5 @@
 # devlog-server
+<https://devlog.juntae.kim>
 ## Personal Development blog by John
 ### Tech Stack
 * Typescript
