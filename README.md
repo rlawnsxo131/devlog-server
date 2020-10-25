@@ -3,6 +3,7 @@
 ## Personal Development blog by John
 ### Tech Stack
 * Typescript
+* MySQL
 * Serverless Framework
 * Node.js
   * Koa.js
