@@ -1,0 +1,13 @@
+{
+  "name": "image-optimizer",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.779.0",
+    "sharp": "^0.26.2"
+  },
+  "devDependencies": {
+    "prettier": "^2.1.2"
+  }
+}
