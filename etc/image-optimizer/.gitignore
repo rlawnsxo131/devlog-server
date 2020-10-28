@@ -1,0 +1,24 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+/.build
+/dist
+/.chache
+/.webpack
+/.serverless
+
+# misc
+.DS_Store
+.env.production
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+

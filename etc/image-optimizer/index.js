@@ -1,6 +1,3 @@
-// https://heropy.blog/2019/07/21/resizing-images-cloudfrount-lambda/
-// https://medium.com/daangn/lambda-edge%EB%A1%9C-%EA%B5%AC%ED%98%84%ED%95%98%EB%8A%94-on-the-fly-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EB%A6%AC%EC%82%AC%EC%9D%B4%EC%A7%95-f4e5052d49f3
-
 const querystring = require('querystring');
 const AWS = require('aws-sdk');
 const S3 = new AWS.S3({
@@ -8,7 +5,7 @@ const S3 = new AWS.S3({
 });
 
 const Sharp = require('sharp');
-const BUCKET = 'image-devlog.juntae.kim'; // S3 Bucket name
+const BUCKET = ''; // S3 Bucket 이름
 
 async function resize(key, { format, w }) {
   const s3Object = await S3.getObject({
@@ -21,7 +18,7 @@ async function resize(key, { format, w }) {
   if (info.width <= parsedWidth) {
     return null;
   }
-  const width = parsedWidth && Math.min(parsedWidth, 10245);
+  const width = parsedWidth && Math.min(parsedWidth, 2048);
 
   let task = Sharp(s3Object.Body);
   if (width) {
