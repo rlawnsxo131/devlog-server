@@ -1,5 +1,6 @@
 import { Middleware } from 'koa';
 import { format, lastDayOfMonth, subMonths } from 'date-fns';
+import koLocale from 'date-fns/locale/ko';
 import { Between, getRepository } from 'typeorm';
 import Post from '../../entity/Post';
 
@@ -22,6 +23,7 @@ function getAllMonths() {
 }
 
 function generateSitemap(links: Array<SitemapLink>) {
+  console.log(links);
   const urls = links
     .map(
       link => `<url>
@@ -94,7 +96,11 @@ export const postsSitemap: Middleware = async ctx => {
     });
     const links: Array<SitemapLink> = posts.map(post => ({
       location: `https://devlog.juntae.kim/post/${post.post_header}?id=${post.id}`,
-      lastmod: `${post.released_at}`,
+      lastmod:
+        post.released_at &&
+        `${format(post.released_at, 'yyyy-MM-dd HH:mm:ss', {
+          locale: koLocale,
+        })}`,
       changefreq: 'weekly',
     }));
     ctx.set('Content-Type', 'text/xml');
