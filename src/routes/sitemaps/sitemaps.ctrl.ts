@@ -22,7 +22,6 @@ function getAllMonths() {
 }
 
 function generateSitemap(links: Array<SitemapLink>) {
-  console.log(links);
   const urls = links
     .map(
       link => `<url>
