@@ -3,8 +3,7 @@ import Post from './Post';
 import PostHasTag from './PostHasTag';
 import Series from './Series';
 import Tag from './Tag';
-import AdminUser from './AdminUser';
 
-const entities = [Comment, Post, PostHasTag, Series, Tag, AdminUser];
+const entities = [Comment, Post, PostHasTag, Series, Tag];
 
 export default entities;
