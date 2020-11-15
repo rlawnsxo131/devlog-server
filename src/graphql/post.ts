@@ -18,6 +18,7 @@ export const typeDef = gql`
     post_header: String!
     post_body: String!
     short_description: String
+    thumnail: String
     open_yn: Boolean!
     series_id: Int!
     created_at: Date!

@@ -5,7 +5,7 @@ const S3 = new AWS.S3({
 });
 
 const Sharp = require('sharp');
-const BUCKET = ''; // S3 Bucket 이름
+const BUCKET = 'image-devlog.juntae.kim'; // S3 Bucket 이름
 
 async function resize(key, { format, w }) {
   const s3Object = await S3.getObject({
@@ -18,7 +18,7 @@ async function resize(key, { format, w }) {
   if (info.width <= parsedWidth) {
     return null;
   }
-  const width = parsedWidth && Math.min(parsedWidth, 2048);
+  const width = parsedWidth && Math.min(parsedWidth, 1024);
 
   let task = Sharp(s3Object.Body);
   if (width) {

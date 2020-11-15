@@ -25,6 +25,9 @@ export default class Post {
   @Column()
   short_description!: string;
 
+  @Column({ default: null, nullable: true })
+  thumnail?: string;
+
   @Column({ default: false })
   open_yn!: boolean;
 
