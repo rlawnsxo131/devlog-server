@@ -93,7 +93,9 @@ export const postsSitemap: Middleware = async ctx => {
       },
     });
     const links: Array<SitemapLink> = posts.map(post => ({
-      location: `https://devlog.juntae.kim/post/${post.post_header}?id=${post.id}`,
+      location: `https://devlog.juntae.kim/post/${encodeURI(
+        post.post_header
+      )}?id=${post.id}`,
       lastmod: post.released_at && new Date(post.released_at).toISOString(),
       changefreq: 'weekly',
     }));
