@@ -11,6 +11,7 @@ export const typeDef = gql`
     series_id: ID!
     series_name: String!
     post_id: ID!
+    url_slug: String!
     post_header: String!
   }
   type Post {
@@ -18,9 +19,11 @@ export const typeDef = gql`
     post_header: String!
     post_body: String!
     short_description: String
+    preview_description: String!
     thumnail: String
     open_yn: Boolean!
     series_id: Int!
+    url_slug: String!
     created_at: Date!
     updated_at: Date!
     released_at: Date
@@ -30,10 +33,14 @@ export const typeDef = gql`
   }
 
   extend type Query {
-    post(id: ID!, post_header: String!): Post!
+    post(url_slug: String!): Post!
     posts(tag: String): [Post]!
   }
 `;
+
+type PostQueryParams = {
+  url_slug: string;
+};
 
 export const resolvers: IResolvers = {
   // parent, args, context, info
@@ -67,21 +74,17 @@ export const resolvers: IResolvers = {
       }
       return seriesPosts;
     },
+    preview_description: (parent: Post) => {
+      return parent.post_body.slice(0, 150);
+    },
   },
   Query: {
-    post: async (
-      _,
-      { id, post_header }: { id: number; post_header: string }
-    ) => {
-      if (!id) {
-        throw new ApolloError('Not Found post_id');
-      }
-      const post = await getRepository(Post).findOne(id);
-      if (!post || !post.open_yn) {
+    post: async (_, { url_slug }: PostQueryParams) => {
+      if (!url_slug) {
         throw new ApolloError('Not Found POST');
       }
-
-      if (post.post_header !== post_header) {
+      const post = await getRepository(Post).findOne({ url_slug });
+      if (!post || !post.open_yn) {
         throw new ApolloError('Not Found POST');
       }
       return post;

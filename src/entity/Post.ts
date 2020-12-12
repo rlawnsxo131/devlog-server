@@ -35,6 +35,9 @@ export default class Post {
   @Column({ unsigned: true, default: 0 })
   series_id!: number;
 
+  @Column({ type: 'varchar', length: 127 })
+  url_slug!: string;
+
   @CreateDateColumn({ type: 'timestamp' })
   created_at!: Date;
 
@@ -51,7 +54,7 @@ export const createPostsLoader = () =>
   new DataLoader<number, Array<SeriesPost>>(async seriesIds => {
     const posts = await getRepository(Series)
       .createQueryBuilder('s')
-      .select(['p.id, p.series_id, p.post_header, p.released_at'])
+      .select(['p.id, p.url_slug, p.series_id, p.post_header, p.released_at'])
       .innerJoin(Post, 'p', 's.id = p.series_id')
       .where('p.open_yn IS TRUE')
       .andWhere('p.series_id IN (:seriesIds)', { seriesIds })
