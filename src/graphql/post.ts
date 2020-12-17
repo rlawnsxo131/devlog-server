@@ -75,7 +75,7 @@ export const resolvers: IResolvers = {
       return seriesPosts;
     },
     preview_description: (parent: Post) => {
-      return parent.post_body.slice(0, 100);
+      return parent.post_body.slice(0, 150);
     },
   },
   Query: {
