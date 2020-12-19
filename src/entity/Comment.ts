@@ -58,11 +58,11 @@ export default class Comment {
 }
 
 export const createCommentsLoader = () =>
-  new DataLoader<number, Array<Comment>>(async commentIds => {
+  new DataLoader<Readonly<number>, Array<Comment>>(async commentIds => {
     const subComments = await getRepository(Comment)
       .createQueryBuilder('c')
       .where('c.reply_comment_id IN (:commentIds)', { commentIds })
-      .andWhere('(c.deleted = false OR c.has_replies = true)')
+      .andWhere('(c.deleted IS FALSE OR c.has_replies IS TRUE)')
       .orderBy('c.id', 'ASC')
       .getMany();
 

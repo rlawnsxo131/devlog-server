@@ -22,6 +22,7 @@ export const typeDef = gql`
 
   extend type Query {
     comments(post_id: ID!): [Comment]!
+    commentsCount(post_id: ID!): Int!
     confirmPassword(comment_id: ID!, password: String!): Comment!
   }
 
@@ -73,11 +74,21 @@ export const resolvers: IResolvers = {
         .createQueryBuilder('c')
         .where('c.post_id = :post_id', { post_id })
         .andWhere('c.level = 0')
-        .andWhere('(c.deleted = false OR c.has_replies = true)')
+        .andWhere('(c.deleted IS FALSE OR c.has_replies IS TRUE)')
         .orderBy('c.id', 'ASC')
         .getMany();
 
       return comments;
+    },
+    commentsCount: async (_, { post_id }) => {
+      const commentsCount = await getRepository(Comment)
+        .createQueryBuilder('c')
+        .select(['c.id, COUNT(*) as count'])
+        .where('c.post_id = :post_id', { post_id })
+        .andWhere('(c.deleted IS FALSE OR c.has_replies IS TRUE)')
+        .getCount();
+
+      return commentsCount;
     },
     confirmPassword: async (_, { comment_id, password }) => {
       const commentRepo = getRepository(Comment);
@@ -134,7 +145,7 @@ export const resolvers: IResolvers = {
         await commentRepo.save(newComment);
         return newComment;
       } catch (e) {
-        throw new ApolloError(`CREATE_COMMENT ERROR: ${e}`);
+        throw new ApolloError(`Create Comment Error: ${e}`);
       }
     },
     updateComment: async (_, args) => {
@@ -167,7 +178,7 @@ export const resolvers: IResolvers = {
         const repliesCount = await commentRepo
           .createQueryBuilder('c')
           .where('reply_comment_id = :id', { id: targetComment.id })
-          .andWhere('deleted = false')
+          .andWhere('deleted IS FALSE false')
           .getCount();
 
         if (repliesCount === 0) {
@@ -183,7 +194,7 @@ export const resolvers: IResolvers = {
           const parentsRepliesCount = await commentRepo
             .createQueryBuilder('c')
             .where('reply_comment_id = :id', { id: parentsComment.id })
-            .andWhere('deleted = false')
+            .andWhere('deleted IS FALSE')
             .getCount();
           if (parentsRepliesCount === 0) {
             parentsComment.has_replies = false;

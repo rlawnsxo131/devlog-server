@@ -3,7 +3,6 @@ import { getRepository } from 'typeorm';
 import Tag, { PostTag } from '../entity/Tag';
 import Post, { SeriesPost } from '../entity/Post';
 import PostHasTag from '../entity/PostHasTag';
-import Comment from '../entity/Comment';
 import Series from '../entity/Series';
 
 export const typeDef = gql`
@@ -49,14 +48,8 @@ export const resolvers: IResolvers = {
       const tags: Array<PostTag> = await loaders.tag.load(parent.id);
       return tags.map(tag => tag.name);
     },
-    comments_count: async (parent: Post) => {
-      const commentsCount = await getRepository(Comment)
-        .createQueryBuilder('c')
-        .where('c.post_id = :post_id', { post_id: parent.id })
-        .andWhere('(c.deleted = false OR c.has_replies = true)')
-        .orderBy('c.id', 'ASC')
-        .getCount();
-
+    comments_count: async (parent: Post, _, { loaders }) => {
+      const commentsCount = await loaders.commentsCount.load(parent.id);
       return commentsCount;
     },
     series_posts: async (parent: Post) => {

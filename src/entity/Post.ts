@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import * as DataLoader from 'dataloader';
 import Series from './Series';
+import Comment from './Comment';
 import { groupByObjectId } from '../lib/utils';
 
 @Entity('post')
@@ -50,14 +51,14 @@ export default class Post {
 }
 
 export type SeriesPost = { id: number; series_id: number; post_header: string };
-export const createPostsLoader = () =>
-  new DataLoader<number, Array<SeriesPost>>(async seriesIds => {
+export const createSeriesPostsLoader = () =>
+  new DataLoader<Readonly<number>, Array<SeriesPost>>(async seriesIds => {
     const posts = await getRepository(Series)
       .createQueryBuilder('s')
       .select(['p.id, p.url_slug, p.series_id, p.post_header, p.released_at'])
       .innerJoin(Post, 'p', 's.id = p.series_id')
-      .where('p.open_yn IS TRUE')
-      .andWhere('p.series_id IN (:seriesIds)', { seriesIds })
+      .where('p.series_id IN (:seriesIds)', { seriesIds })
+      .andWhere('p.open_yn IS TRUE')
       .orderBy('p.released_at', 'ASC')
       .getRawMany();
 
@@ -67,4 +68,28 @@ export const createPostsLoader = () =>
       post => post.series_id
     );
     return seriesIds.map(id => groupingObj[id]);
+  });
+
+export const createCommentsCountLoader = () =>
+  new DataLoader<Readonly<number>, number>(async postIds => {
+    const commentsCount = await getRepository(Post)
+      .createQueryBuilder('p')
+      .select(['p.id as post_id, COUNT(*) as count'])
+      .leftJoin(Comment, 'c', 'p.id = c.post_id')
+      .where('c.post_id IN (:postIds)', { postIds })
+      .andWhere('(c.deleted IS FALSE OR c.has_replies IS TRUE)')
+      .groupBy('p.id')
+      .getRawMany();
+
+    const obj: {
+      [key: number]: number;
+    } = {};
+    postIds.forEach(v => {
+      obj[v] = 0;
+    });
+    commentsCount.forEach(v => {
+      obj[v.post_id] = Number(v.count) && v.count;
+    });
+
+    return postIds.map(v => obj[v]);
   });

@@ -18,7 +18,9 @@ export const typeDef = gql`
 export const resolvers: IResolvers = {
   Series: {
     posts: async (parent: Series, _, { loaders }) => {
-      const posts: Array<SeriesPost> = await loaders.post.load(parent.id);
+      const posts: Array<SeriesPost> = await loaders.seriesPosts.load(
+        parent.id
+      );
       return posts;
     },
   },
