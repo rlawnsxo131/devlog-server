@@ -23,7 +23,6 @@ export const typeDef = gql`
   extend type Query {
     comments(post_id: ID!): [Comment]!
     commentsCount(post_id: ID!): Int!
-    confirmPassword(comment_id: ID!, password: String!): Comment!
   }
 
   extend type Mutation {
@@ -34,9 +33,15 @@ export const typeDef = gql`
       password: String!
       email: String
       comment: String!
-    ): Comment!
-    updateComment(comment_id: ID!, email: String, comment: String!): Boolean!
-    removeComment(comment_id: ID!): Boolean!
+    ): Boolean!
+    updateComment(
+      comment_id: ID!
+      password: String!
+      writer: String
+      email: String
+      comment: String!
+    ): Boolean!
+    removeComment(comment_id: ID!, password: String!): Boolean!
   }
 `;
 
@@ -51,8 +56,15 @@ type CreateCommentArgs = {
 
 type UpdateCommentArgs = {
   comment_id: number;
+  password: string;
+  writer?: string;
   email?: string;
   comment: string;
+};
+
+type RemoveCommentArgs = {
+  comment_id: number;
+  password: string;
 };
 
 export const resolvers: IResolvers = {
@@ -89,18 +101,6 @@ export const resolvers: IResolvers = {
         .getCount();
 
       return commentsCount;
-    },
-    confirmPassword: async (_, { comment_id, password }) => {
-      const commentRepo = getRepository(Comment);
-      const comment = await commentRepo.findOne(comment_id);
-      if (!comment) {
-        throw new ApolloError('Not Found Comment');
-      }
-      const decryptPassword = await decrypt(password, comment.salt);
-      if (decryptPassword !== comment.password) {
-        throw new ApolloError('Not Matched Password');
-      }
-      return comment;
     },
   },
   Mutation: {
@@ -143,19 +143,30 @@ export const resolvers: IResolvers = {
         newComment.email = email && email;
         newComment.comment = comment;
         await commentRepo.save(newComment);
-        return newComment;
+        return true;
       } catch (e) {
         throw new ApolloError(`Create Comment Error: ${e}`);
       }
     },
     updateComment: async (_, args) => {
-      const { comment_id, email, comment } = args as UpdateCommentArgs;
+      const {
+        comment_id,
+        password,
+        writer,
+        email,
+        comment,
+      } = args as UpdateCommentArgs;
       const commentRepo = getRepository(Comment);
       const targetComment = await commentRepo.findOne(comment_id);
       if (!targetComment) {
         throw new ApolloError('Not Found Update Target Comment');
       }
+      const decryptPassword = await decrypt(password, targetComment.salt);
+      if (decryptPassword !== targetComment.password) {
+        throw new ApolloError('Not Matched Password');
+      }
       try {
+        targetComment.writer = writer ? writer : targetComment.writer;
         targetComment.email = email && email;
         targetComment.comment = comment;
         targetComment.edited_at = new Date();
@@ -165,12 +176,17 @@ export const resolvers: IResolvers = {
         throw new ApolloError(`Update Comment Error: ${e}`);
       }
     },
-    removeComment: async (_, { comment_id }) => {
+    removeComment: async (_, args) => {
+      const { comment_id, password } = args as RemoveCommentArgs;
       const commentRepo = getRepository(Comment);
       try {
         const targetComment = await commentRepo.findOne(comment_id);
         if (!targetComment) {
           throw new ApolloError('Not Found Remove Target Comment');
+        }
+        const decryptPassword = await decrypt(password, targetComment.salt);
+        if (decryptPassword !== targetComment.password) {
+          throw new ApolloError('Not Matched Password');
         }
         // targetComment
         targetComment.deleted = true;
