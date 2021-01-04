@@ -4,6 +4,7 @@ import Tag, { PostTag } from '../entity/Tag';
 import Post, { SeriesPost } from '../entity/Post';
 import PostHasTag from '../entity/PostHasTag';
 import Series from '../entity/Series';
+import errorCodes from '../lib/errorCodes';
 
 export const typeDef = gql`
   type SeriesPost {
@@ -46,7 +47,7 @@ export const resolvers: IResolvers = {
   Post: {
     tags: async (parent: Post, _, { loaders }) => {
       const tags: Array<PostTag> = await loaders.tag.load(parent.id);
-      return tags.map(tag => tag.name);
+      return tags.map((tag) => tag.name);
     },
     comments_count: async (parent: Post, _, { loaders }) => {
       const commentsCount = await loaders.commentsCount.load(parent.id);
@@ -74,38 +75,34 @@ export const resolvers: IResolvers = {
   Query: {
     post: async (_, { url_slug }: PostQueryParams) => {
       if (!url_slug) {
-        throw new ApolloError('Not Found POST');
+        throw new ApolloError('Not Found Url Slug', errorCodes.BAD_REQUEST);
       }
       const post = await getRepository(Post).findOne({ url_slug });
       if (!post || !post.open_yn) {
-        throw new ApolloError('Not Found POST');
+        throw new ApolloError('Not Found Post', errorCodes.NOT_FOUND);
       }
       return post;
     },
     posts: async (_, { tag }: { tag?: string }) => {
-      try {
-        const query = getRepository(Post)
-          .createQueryBuilder('p')
-          .leftJoin(PostHasTag, 'pht', 'p.id = pht.post_id')
-          .leftJoin(Tag, 't', 't.id = pht.tag_id')
-          .where('open_yn IS TRUE')
-          .groupBy('p.id')
-          .orderBy('p.released_at', 'DESC');
+      const query = getRepository(Post)
+        .createQueryBuilder('p')
+        .leftJoin(PostHasTag, 'pht', 'p.id = pht.post_id')
+        .leftJoin(Tag, 't', 't.id = pht.tag_id')
+        .where('open_yn IS TRUE')
+        .groupBy('p.id')
+        .orderBy('p.released_at', 'DESC');
 
-        if (tag && tag !== 'undefined') {
-          query.andWhere('t.name = :tag', { tag });
-        }
-
-        const posts = await query.getMany();
-
-        if (tag && !posts.length) {
-          throw new ApolloError('Not Found posts');
-        }
-
-        return posts;
-      } catch (e) {
-        throw new ApolloError(e);
+      if (tag && tag !== 'undefined') {
+        query.andWhere('t.name = :tag', { tag });
       }
+
+      const posts = await query.getMany();
+
+      if (tag && !posts.length) {
+        throw new ApolloError('Not Found Posts', errorCodes.NOT_FOUND);
+      }
+
+      return posts;
     },
   },
   Mutation: {},

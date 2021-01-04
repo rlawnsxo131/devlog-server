@@ -20,7 +20,7 @@ export const typeDef = gql`
 
 export const resolvers: IResolvers = {
   Query: {
-    tags: async _ => {
+    tags: async (_) => {
       const tags = await getRepository(Tag)
         .createQueryBuilder('t')
         .select(['t.*, COUNT(*) as count'])

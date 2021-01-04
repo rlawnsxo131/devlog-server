@@ -2,6 +2,7 @@ import { gql, IResolvers, ApolloError } from 'apollo-server-koa';
 import { getRepository } from 'typeorm';
 import { createSaltAndHash, decrypt } from '../lib/utils';
 import Comment from '../entity/Comment';
+import errorCodes from '../lib/errorCodes';
 
 export const typeDef = gql`
   type Comment {
@@ -79,9 +80,6 @@ export const resolvers: IResolvers = {
   },
   Query: {
     comments: async (_, { post_id }) => {
-      if (!post_id) {
-        throw new ApolloError('Not Found Target post_id');
-      }
       const comments = await getRepository(Comment)
         .createQueryBuilder('c')
         .where('c.post_id = :post_id', { post_id })
@@ -89,7 +87,6 @@ export const resolvers: IResolvers = {
         .andWhere('(c.deleted IS FALSE OR c.has_replies IS TRUE)')
         .orderBy('c.id', 'ASC')
         .getMany();
-
       return comments;
     },
     commentsCount: async (_, { post_id }) => {
@@ -113,27 +110,24 @@ export const resolvers: IResolvers = {
         email,
         comment,
       } = args as CreateCommentArgs;
-      if (!post_id) {
-        throw new ApolloError('Not Found Target post_id');
-      }
-
       const commentRepo = getRepository(Comment);
       const newComment = new Comment();
-
       if (reply_comment_id) {
         const commentTarget = await commentRepo.findOne(reply_comment_id);
         if (!commentTarget) {
-          throw new ApolloError('Not Found Update Target Comment');
+          throw new ApolloError('Not Found Comment Target', errorCodes.UNKNOWN);
         }
         commentTarget.has_replies = true;
         newComment.reply_comment_id = reply_comment_id;
         newComment.level = commentTarget.level + 1;
         if (newComment.level > 2) {
-          throw new ApolloError('Comment level exceeded');
+          throw new ApolloError(
+            `Comment Level Exceeded: ${newComment.level}`,
+            errorCodes.BAD_REQUEST,
+          );
         }
         await commentRepo.save(commentTarget);
       }
-
       try {
         const { salt, hash } = await createSaltAndHash(password);
         newComment.post_id = post_id;
@@ -145,7 +139,7 @@ export const resolvers: IResolvers = {
         await commentRepo.save(newComment);
         return true;
       } catch (e) {
-        throw new ApolloError(`Create Comment Error: ${e}`);
+        throw new ApolloError(`Create Comment Error: ${e}`, errorCodes.UNKNOWN);
       }
     },
     updateComment: async (_, args) => {
@@ -159,11 +153,14 @@ export const resolvers: IResolvers = {
       const commentRepo = getRepository(Comment);
       const targetComment = await commentRepo.findOne(comment_id);
       if (!targetComment) {
-        throw new ApolloError('Not Found Update Target Comment');
+        throw new ApolloError('Not Found Target Comment', errorCodes.UNKNOWN);
       }
       const decryptPassword = await decrypt(password, targetComment.salt);
       if (decryptPassword !== targetComment.password) {
-        throw new ApolloError('Not Matched Password');
+        throw new ApolloError(
+          `Not Matched Password`,
+          errorCodes.NOT_MATCHED_PASSWORD,
+        );
       }
       try {
         targetComment.writer = writer ? writer : targetComment.writer;
@@ -173,38 +170,39 @@ export const resolvers: IResolvers = {
         await commentRepo.save(targetComment);
         return true;
       } catch (e) {
-        throw new ApolloError(`Update Comment Error: ${e}`);
+        throw new ApolloError(`Update Comment Error: ${e}`, errorCodes.UNKNOWN);
       }
     },
     removeComment: async (_, args) => {
       const { comment_id, password } = args as RemoveCommentArgs;
       const commentRepo = getRepository(Comment);
+      const targetComment = await commentRepo.findOne(comment_id);
+      if (!targetComment) {
+        throw new ApolloError('Not Found Target Comment', errorCodes.UNKNOWN);
+      }
+      const decryptPassword = await decrypt(password, targetComment.salt);
+      if (decryptPassword !== targetComment.password) {
+        throw new ApolloError(
+          'Not Matched Password',
+          errorCodes.NOT_MATCHED_PASSWORD,
+        );
+      }
       try {
-        const targetComment = await commentRepo.findOne(comment_id);
-        if (!targetComment) {
-          throw new ApolloError('Not Found Remove Target Comment');
-        }
-        const decryptPassword = await decrypt(password, targetComment.salt);
-        if (decryptPassword !== targetComment.password) {
-          throw new ApolloError('Not Matched Password');
-        }
         // targetComment
         targetComment.deleted = true;
-
         const repliesCount = await commentRepo
           .createQueryBuilder('c')
           .where('reply_comment_id = :id', { id: targetComment.id })
-          .andWhere('deleted IS FALSE false')
+          .andWhere('deleted IS FALSE')
           .getCount();
 
         if (repliesCount === 0) {
           targetComment.has_replies = false;
         }
         await commentRepo.save(targetComment);
-
         // parentsComment
         const parentsComment = await commentRepo.findOne(
-          targetComment.reply_comment_id
+          targetComment.reply_comment_id,
         );
         if (parentsComment) {
           const parentsRepliesCount = await commentRepo
@@ -219,7 +217,7 @@ export const resolvers: IResolvers = {
         }
         return true;
       } catch (e) {
-        throw new ApolloError(`Remove Comment Error: ${e}`);
+        throw new ApolloError(`Remove Comment Error: ${e}`, errorCodes.UNKNOWN);
       }
     },
   },

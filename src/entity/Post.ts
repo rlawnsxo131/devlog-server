@@ -52,7 +52,7 @@ export default class Post {
 
 export type SeriesPost = { id: number; series_id: number; post_header: string };
 export const createSeriesPostsLoader = () =>
-  new DataLoader<Readonly<number>, Array<SeriesPost>>(async seriesIds => {
+  new DataLoader<Readonly<number>, Array<SeriesPost>>(async (seriesIds) => {
     const posts = await getRepository(Series)
       .createQueryBuilder('s')
       .select(['p.id, p.url_slug, p.series_id, p.post_header, p.released_at'])
@@ -65,13 +65,13 @@ export const createSeriesPostsLoader = () =>
     const groupingObj = groupByObjectId<SeriesPost>(
       seriesIds,
       posts,
-      post => post.series_id
+      (post) => post.series_id
     );
-    return seriesIds.map(id => groupingObj[id]);
+    return seriesIds.map((id) => groupingObj[id]);
   });
 
 export const createCommentsCountLoader = () =>
-  new DataLoader<Readonly<number>, number>(async postIds => {
+  new DataLoader<Readonly<number>, number>(async (postIds) => {
     const commentsCount = await getRepository(Post)
       .createQueryBuilder('p')
       .select(['p.id as post_id, COUNT(*) as count'])
@@ -84,12 +84,12 @@ export const createCommentsCountLoader = () =>
     const obj: {
       [key: number]: number;
     } = {};
-    postIds.forEach(v => {
+    postIds.forEach((v) => {
       obj[v] = 0;
     });
-    commentsCount.forEach(v => {
+    commentsCount.forEach((v) => {
       obj[v.post_id] = Number(v.count) && v.count;
     });
 
-    return postIds.map(v => obj[v]);
+    return postIds.map((v) => obj[v]);
   });

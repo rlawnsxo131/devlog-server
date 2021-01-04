@@ -25,7 +25,7 @@ export const resolvers: IResolvers = {
     },
   },
   Query: {
-    series: async _ => {
+    series: async (_) => {
       const series = await getRepository(Series).find({
         order: {
           id: 'DESC',

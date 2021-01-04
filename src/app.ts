@@ -10,6 +10,7 @@ import cors from './lib/middlewares/cors';
 import compress from './lib/middlewares/compress';
 
 initializeConfig();
+const isProduction = process.env.NODE_ENV === 'production';
 const app = new Koa();
 
 /* set up middlewares */
@@ -20,6 +21,7 @@ app.use(compress);
 app.use(routes.routes()).use(routes.allowedMethods());
 
 const apollo = new ApolloServer({
+  debug: !isProduction,
   schema,
   context: async ({ ctx }: { ctx: Koa.Context }) => {
     try {

@@ -12,11 +12,11 @@ export function groupByObjectId<T>(
     [key: number]: Array<T>;
   } = {};
 
-  ids.forEach(id => {
+  ids.forEach((id) => {
     obj[id] = [];
   });
 
-  rows.forEach(row => {
+  rows.forEach((row) => {
     obj[idResolver(row)].push(row);
   });
 

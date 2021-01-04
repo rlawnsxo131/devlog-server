@@ -41,7 +41,7 @@ export default class Tag {
 
 export type PostTag = { post_id: number; name: string };
 export const createTagsLoader = () =>
-  new DataLoader<Readonly<number>, Array<PostTag>>(async postIds => {
+  new DataLoader<Readonly<number>, Array<PostTag>>(async (postIds) => {
     const tags = await getRepository(Tag)
       .createQueryBuilder('t')
       .select(['t.name, pht.post_id'])
@@ -52,7 +52,7 @@ export const createTagsLoader = () =>
     const groupingObj = groupByObjectId<PostTag>(
       postIds,
       tags,
-      tag => tag.post_id
+      (tag) => tag.post_id
     );
-    return postIds.map(id => groupingObj[id]);
+    return postIds.map((id) => groupingObj[id]);
   });
