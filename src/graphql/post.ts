@@ -59,7 +59,7 @@ export const resolvers: IResolvers = {
         seriesPosts = await getRepository(Series)
           .createQueryBuilder('s')
           .select([
-            'p.series_id, s.series_name, p.id as post_id, p.post_header',
+            'p.series_id, s.series_name, p.id as post_id, p.url_slug, p.post_header',
           ])
           .innerJoin(Post, 'p', 's.id = p.series_id')
           .where('p.series_id = :series_id', { series_id: parent.series_id })
