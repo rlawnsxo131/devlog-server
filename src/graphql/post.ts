@@ -38,7 +38,7 @@ export const typeDef = gql`
   }
 `;
 
-type PostQueryParams = {
+type PostArgs = {
   url_slug: string;
 };
 
@@ -73,7 +73,7 @@ export const resolvers: IResolvers = {
     },
   },
   Query: {
-    post: async (_, { url_slug }: PostQueryParams) => {
+    post: async (_, { url_slug }: PostArgs) => {
       if (!url_slug) {
         throw new ApolloError('Not Found Url Slug', errorCodes.BAD_REQUEST);
       }
