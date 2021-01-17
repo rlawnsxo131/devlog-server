@@ -1,5 +1,4 @@
-service:
-  name: 'devlog-server'
+service: devlog-server
 
 plugins:
   - serverless-webpack
@@ -15,6 +14,10 @@ provider:
   runtime: nodejs12.x
   region: ap-northeast-2
   stage: dev
+  lambdaHashingVersion: 20201221
+  apiGateway:
+    shouldStartNameWithService: true
+  
 
   environment:
     SECRET_KEY: ${env:SECRET_KEY}
@@ -34,6 +37,8 @@ provider:
       - ${env:AWS_SUBNET_ID_FIRST}
       - ${env:AWS_SUBNET_ID_SECOND}
       - ${env:AWS_SUBNET_ID_THIRD}
+
+unresolvedVariablesNotificationMode: error
 
 functions:
   app:
