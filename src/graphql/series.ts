@@ -29,7 +29,6 @@ export const resolvers: IResolvers = {
       const series = await getRepository(Series)
         .createQueryBuilder('s')
         .innerJoin(Post, 'p', 's.id = p.series_id')
-        .where('p.id IS TRUE')
         .getMany();
 
       return series;
