@@ -13,9 +13,11 @@ export default class PostHasTag {
   @PrimaryGeneratedColumn({ unsigned: true })
   id!: number;
 
+  @Index('ix_postid')
   @Column({ unsigned: true })
   post_id!: number;
 
+  @Index('ix_tagid')
   @Column({ unsigned: true })
   tag_id!: number;
 

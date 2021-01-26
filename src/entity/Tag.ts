@@ -20,9 +20,6 @@ export default class Tag {
   @Column({ length: 50, type: 'varchar' })
   name!: string;
 
-  // @Column({ unsigned: true, default: 0 })
-  // post_count!: number;
-
   @CreateDateColumn({ type: 'timestamp' })
   created_at!: Date;
 

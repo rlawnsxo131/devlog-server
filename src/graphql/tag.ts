@@ -28,8 +28,8 @@ export const resolvers: IResolvers = {
         .innerJoin(Post, 'p', 'pht.post_id = p.id')
         .where('p.open_yn IS TRUE')
         .groupBy('t.id')
-        .orderBy('pht.tag_id', 'ASC')
         .getRawMany();
+
       return tags;
     },
   },
