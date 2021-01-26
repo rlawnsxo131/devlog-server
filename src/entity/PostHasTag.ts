@@ -5,7 +5,6 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Index,
-  getRepository,
 } from 'typeorm';
 
 @Entity('post_has_tag')
@@ -17,7 +16,6 @@ export default class PostHasTag {
   @Column({ unsigned: true })
   post_id!: number;
 
-  @Index('ix_tagid')
   @Column({ unsigned: true })
   tag_id!: number;
 
@@ -26,23 +24,4 @@ export default class PostHasTag {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at!: Date;
-
-  static async findOrCreate({
-    post_id,
-    tag_id,
-  }: {
-    post_id: number;
-    tag_id: number;
-  }) {
-    const postHasTagRepo = getRepository(PostHasTag);
-    const postHasTag = await postHasTagRepo.findOne({ post_id, tag_id });
-    if (postHasTag) {
-      return postHasTag;
-    }
-    const newPostHasTag = new PostHasTag();
-    newPostHasTag.post_id = post_id;
-    newPostHasTag.tag_id = tag_id;
-    await postHasTagRepo.save(newPostHasTag);
-    return newPostHasTag;
-  }
 }

@@ -95,13 +95,13 @@ export const resolvers: IResolvers = {
         .orderBy('p.released_at', 'DESC');
 
       if (tag && tag !== 'undefined') {
-        // better than join
-        const postIdsObj = await getRepository(PostHasTag)
-          .createQueryBuilder('pht')
-          .select('pht.post_id')
-          .innerJoin(Tag, 't', 'pht.tag_id = t.id')
-          .where('t.name = :tag', { tag })
-          .getMany();
+        // better than joins
+        const targetTag = (await getRepository(Tag).findOne({
+          name: tag,
+        })) as Tag;
+        const postIdsObj = await getRepository(PostHasTag).find({
+          tag_id: targetTag.id,
+        });
         const postIds = postIdsObj.map((v) => v.post_id);
         query.andWhere('p.id IN (:postIds)', { postIds });
       }

@@ -65,7 +65,7 @@ export const createSeriesPostsLoader = () =>
     const groupingObj = groupByObjectId<SeriesPost>(
       seriesIds,
       posts,
-      (post) => post.series_id
+      (post) => post.series_id,
     );
     return seriesIds.map((id) => groupingObj[id]);
   });
@@ -75,7 +75,7 @@ export const createCommentsCountLoader = () =>
     const commentsCount = await getRepository(Post)
       .createQueryBuilder('p')
       .select(['p.id as post_id, COUNT(*) as count'])
-      .leftJoin(Comment, 'c', 'p.id = c.post_id')
+      .innerJoin(Comment, 'c', 'p.id = c.post_id')
       .where('c.post_id IN (:postIds)', { postIds })
       .andWhere('(c.deleted IS FALSE OR c.has_replies IS TRUE)')
       .groupBy('p.id')
