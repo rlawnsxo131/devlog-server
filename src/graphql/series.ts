@@ -1,7 +1,7 @@
 import { gql, IResolvers } from 'apollo-server-koa';
 import { getRepository } from 'typeorm';
 import Series from '../entity/Series';
-import { SeriesPost } from '../entity/Post';
+import Post, { SeriesPost } from '../entity/Post';
 
 export const typeDef = gql`
   type Series {
@@ -19,18 +19,19 @@ export const resolvers: IResolvers = {
   Series: {
     posts: async (parent: Series, _, { loaders }) => {
       const posts: Array<SeriesPost> = await loaders.seriesPosts.load(
-        parent.id
+        parent.id,
       );
       return posts;
     },
   },
   Query: {
     series: async (_) => {
-      const series = await getRepository(Series).find({
-        order: {
-          id: 'DESC',
-        },
-      });
+      const series = await getRepository(Series)
+        .createQueryBuilder('s')
+        .innerJoin(Post, 'p', 's.id = p.series_id')
+        .where('p.id IS TRUE')
+        .getMany();
+
       return series;
     },
   },
