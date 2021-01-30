@@ -40,7 +40,7 @@ export const typeDef = gql`
 
 type PostArgs = {
   url_slug: string;
-  id: number;
+  id?: number;
 };
 
 export const resolvers: IResolvers = {
