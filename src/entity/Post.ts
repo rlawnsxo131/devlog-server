@@ -23,9 +23,6 @@ export default class Post {
   @Column({ type: 'text' })
   post_body!: string;
 
-  @Column()
-  short_description!: string;
-
   @Column({ default: null, nullable: true })
   thumnail?: string;
 

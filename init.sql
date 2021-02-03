@@ -46,7 +46,6 @@ CREATE TABLE `post` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `post_header` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `post_body` text COLLATE utf8_unicode_ci NOT NULL,
-  `short_description` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `open_yn` tinyint(4) NOT NULL DEFAULT 0,
   `series_id` int(10) unsigned NOT NULL DEFAULT 0,
   `created_at` timestamp(6) NOT NULL DEFAULT current_timestamp(6),

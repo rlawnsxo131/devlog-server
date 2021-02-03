@@ -18,7 +18,6 @@ export const typeDef = gql`
     id: ID!
     post_header: String!
     post_body: String!
-    short_description: String
     preview_description: String!
     thumnail: String
     open_yn: Boolean!
@@ -70,7 +69,7 @@ export const resolvers: IResolvers = {
       return seriesPosts;
     },
     preview_description: (parent: Post) => {
-      return parent.post_body.slice(0, 150);
+      return parent.post_body.slice(0, 200);
     },
   },
   Query: {
