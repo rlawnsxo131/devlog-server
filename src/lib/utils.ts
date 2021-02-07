@@ -6,7 +6,7 @@ export const scryptPromise = util.promisify(crypto.scrypt);
 export function groupByObjectId<T>(
   ids: ReadonlyArray<number>,
   rows: Array<T>,
-  idResolver: (row: T) => number
+  idResolver: (row: T) => number,
 ) {
   const obj: {
     [key: number]: Array<T>;
@@ -24,7 +24,7 @@ export function groupByObjectId<T>(
 }
 
 export async function createSaltAndHash(
-  target: string
+  target: string,
 ): Promise<{ salt: string; hash: string }> {
   const salt = await randomBytesPromise(32);
   const stringSalt = salt.toString('base64');
@@ -39,7 +39,7 @@ export async function createSaltAndHash(
 
 export async function decrypt(
   target?: string,
-  salt?: string
+  salt?: string,
 ): Promise<string | undefined> {
   if (!target || !salt) {
     return undefined;
