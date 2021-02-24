@@ -59,7 +59,7 @@ export default class Comment {
 
 export const createCommentsLoader = () =>
   new DataLoader<Readonly<number>, Array<Comment>>(async (commentIds) => {
-    const subComments = await getRepository(Comment)
+    const replies = await getRepository(Comment)
       .createQueryBuilder('c')
       .where('c.reply_comment_id IN (:commentIds)', { commentIds })
       .andWhere('(c.deleted IS FALSE OR c.has_replies IS TRUE)')
@@ -72,7 +72,7 @@ export const createCommentsLoader = () =>
     commentIds.forEach((v) => {
       obj[v] = [];
     });
-    subComments.forEach((v) => {
+    replies.forEach((v) => {
       return v.reply_comment_id && obj[v.reply_comment_id].push(v);
     });
 

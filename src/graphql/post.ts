@@ -27,7 +27,6 @@ export const typeDef = gql`
     updated_at: Date!
     released_at: Date
     tags: [String]!
-    comments_count: Int!
     series_posts: [SeriesPost]
   }
 
@@ -48,10 +47,6 @@ export const resolvers: IResolvers = {
     tags: async (parent: Post, _, { loaders }) => {
       const tags: Array<PostTag> = await loaders.tag.load(parent.id);
       return tags.map((tag) => tag.name);
-    },
-    comments_count: async (parent: Post, _, { loaders }) => {
-      const commentsCount = await loaders.commentsCount.load(parent.id);
-      return commentsCount;
     },
     series_posts: async (parent: Post) => {
       let seriesPosts: Array<SeriesPost> = [];

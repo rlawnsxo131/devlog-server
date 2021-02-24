@@ -23,7 +23,6 @@ export const typeDef = gql`
 
   extend type Query {
     comments(post_id: ID!): [Comment]!
-    commentsCount(post_id: ID!): Int!
   }
 
   extend type Mutation {
@@ -88,16 +87,6 @@ export const resolvers: IResolvers = {
         .orderBy('c.id', 'ASC')
         .getMany();
       return comments;
-    },
-    commentsCount: async (_, { post_id }) => {
-      const commentsCount = await getRepository(Comment)
-        .createQueryBuilder('c')
-        .select(['c.id, COUNT(*) as count'])
-        .where('c.post_id = :post_id', { post_id })
-        .andWhere('(c.deleted IS FALSE OR c.has_replies IS TRUE)')
-        .getCount();
-
-      return commentsCount;
     },
   },
   Mutation: {

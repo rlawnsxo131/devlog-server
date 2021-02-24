@@ -9,7 +9,6 @@ import {
 } from 'typeorm';
 import * as DataLoader from 'dataloader';
 import Series from './Series';
-import Comment from './Comment';
 import { groupByObjectId } from '../lib/utils';
 
 @Entity('post')
@@ -65,28 +64,4 @@ export const createSeriesPostsLoader = () =>
       (post) => post.series_id,
     );
     return seriesIds.map((id) => groupingObj[id]);
-  });
-
-export const createCommentsCountLoader = () =>
-  new DataLoader<Readonly<number>, number>(async (postIds) => {
-    const commentsCount = await getRepository(Post)
-      .createQueryBuilder('p')
-      .select(['p.id as post_id, COUNT(*) as count'])
-      .innerJoin(Comment, 'c', 'p.id = c.post_id')
-      .where('c.post_id IN (:postIds)', { postIds })
-      .andWhere('(c.deleted IS FALSE OR c.has_replies IS TRUE)')
-      .groupBy('p.id')
-      .getRawMany();
-
-    const obj: {
-      [key: number]: number;
-    } = {};
-    postIds.forEach((v) => {
-      obj[v] = 0;
-    });
-    commentsCount.forEach((v) => {
-      obj[v.post_id] = Number(v.count) && v.count;
-    });
-
-    return postIds.map((v) => obj[v]);
   });
