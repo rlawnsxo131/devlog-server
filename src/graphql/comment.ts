@@ -46,27 +46,27 @@ export const typeDef = gql`
   }
 `;
 
-type CreateCommentArgs = {
+interface CreateCommentArgs {
   post_id: number;
   reply_comment_id?: number;
   writer: string;
   password: string;
   email?: string;
   comment: string;
-};
+}
 
-type UpdateCommentArgs = {
+interface UpdateCommentArgs {
   comment_id: number;
   password: string;
   writer?: string;
   email?: string;
   comment: string;
-};
+}
 
-type RemoveCommentArgs = {
+interface RemoveCommentArgs {
   comment_id: number;
   password: string;
-};
+}
 
 export const resolvers: IResolvers = {
   Comment: {

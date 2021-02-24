@@ -37,10 +37,10 @@ export const typeDef = gql`
   }
 `;
 
-type PostArgs = {
+interface PostArgs {
   url_slug: string;
   id?: number;
-};
+}
 
 export const resolvers: IResolvers = {
   // parent, args, context, info

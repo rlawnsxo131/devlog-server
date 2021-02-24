@@ -3,11 +3,11 @@ import { format, lastDayOfMonth, subMonths } from 'date-fns';
 import { Between, getRepository } from 'typeorm';
 import Post from '../../entity/Post';
 
-type SitemapLink = {
+interface SitemapLink {
   location: string;
   lastmod?: string;
   changefreq?: string;
-};
+}
 
 function getAllMonths() {
   let date = new Date();
@@ -24,11 +24,11 @@ function getAllMonths() {
 function generateSitemap(links: Array<SitemapLink>) {
   const urls = links
     .map(
-      link => `<url>
+      (link) => `<url>
   <loc>${link.location}</loc>
     ${link.lastmod ? `<lastmod>${link.lastmod}</lastmod>` : ''}
     ${link.changefreq ? `<changefreq>${link.changefreq}</changefreq>` : ''}
-  </url>`
+  </url>`,
     )
     .join('');
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -39,12 +39,12 @@ function generateSitemap(links: Array<SitemapLink>) {
   return xml;
 }
 
-export const sitemapIndex: Middleware = ctx => {
+export const sitemapIndex: Middleware = (ctx) => {
   const months = getAllMonths();
   const sitemaps = months
-    .map(month => `https://api-devlog.juntae.kim/sitemaps/posts-${month}.xml`)
+    .map((month) => `https://api-devlog.juntae.kim/sitemaps/posts-${month}.xml`)
     .concat('https://api-devlog.juntae.kim/sitemaps/general.xml')
-    .map(location => `<sitemap><loc>${location}</loc></sitemap>`)
+    .map((location) => `<sitemap><loc>${location}</loc></sitemap>`)
     .join('');
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
   <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -55,7 +55,7 @@ export const sitemapIndex: Middleware = ctx => {
   ctx.body = xml;
 };
 
-export const generalSitemap: Middleware = ctx => {
+export const generalSitemap: Middleware = (ctx) => {
   const links: SitemapLink[] = [
     {
       location: 'https://devlog.juntae.kim/',
@@ -74,7 +74,7 @@ export const generalSitemap: Middleware = ctx => {
   ctx.body = generateSitemap(links);
 };
 
-export const postsSitemap: Middleware = async ctx => {
+export const postsSitemap: Middleware = async (ctx) => {
   const month = ctx.params.month;
   const startDate = new Date(`${month}-01`);
   const endDate = lastDayOfMonth(startDate);
@@ -85,16 +85,16 @@ export const postsSitemap: Middleware = async ctx => {
         open_yn: true,
         released_at: Between(
           `${format(startDate, 'yyyy-MM-dd')} 00:00:00`,
-          `${format(endDate, 'yyyy-MM-dd')} 23:59:59`
+          `${format(endDate, 'yyyy-MM-dd')} 23:59:59`,
         ),
       },
       order: {
         released_at: 'DESC',
       },
     });
-    const links: Array<SitemapLink> = posts.map(post => ({
+    const links: Array<SitemapLink> = posts.map((post) => ({
       location: `https://devlog.juntae.kim/post/${encodeURI(
-        post.post_header
+        post.post_header,
       )}?id=${post.id}`,
       lastmod: post.released_at && new Date(post.released_at).toISOString(),
       changefreq: 'weekly',
