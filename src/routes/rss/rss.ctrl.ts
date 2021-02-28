@@ -8,11 +8,11 @@ import PostHasTag from '../../entity/PostHasTag';
 import Tag from '../../entity/Tag';
 
 function createFeedFormat(post: Post): Item {
-  const link = `https://devlog.juntae.kim/post/${post.post_header}?id=${post.id}`;
+  const link = `https://devlog.juntae.kim/post/${encodeURI(post.url_slug)}`;
   return {
     link,
     title: post.post_header,
-    description: marked(post.post_body).replace(/[\u001C-\u001F\u0008]/gu, ''),
+    description: marked(post.post_body).replace(/[\u001C-\u001F\u0008]/gi, ''),
     id: link,
     date: post.released_at || post.updated_at,
     author: [
@@ -24,7 +24,7 @@ function createFeedFormat(post: Post): Item {
   };
 }
 
-export const getAllFeed: Middleware = async ctx => {
+export const getAllFeed: Middleware = async (ctx) => {
   const posts = await getRepository(Post).find({
     where: {
       open_yn: true,
@@ -53,7 +53,7 @@ export const getAllFeed: Middleware = async ctx => {
   ctx.body = feed.rss2();
 };
 
-export const getTagFeed: Middleware = async ctx => {
+export const getTagFeed: Middleware = async (ctx) => {
   const tag = ctx.params.tag;
   const posts = await getRepository(Post)
     .createQueryBuilder('p')
