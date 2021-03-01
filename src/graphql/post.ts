@@ -90,13 +90,19 @@ export const resolvers: IResolvers = {
 
       if (tag && tag !== 'undefined') {
         // better than joins
-        const targetTag = (await getRepository(Tag).findOne({
+        const targetTag = await getRepository(Tag).findOne({
           name: tag,
-        })) as Tag;
-        const postIdsObj = await getRepository(PostHasTag).find({
+        });
+        if (!targetTag) {
+          throw new ApolloError('Not Found Posts', errorCodes.NOT_FOUND);
+        }
+        const postHasTags = await getRepository(PostHasTag).find({
           tag_id: targetTag.id,
         });
-        const postIds = postIdsObj.map((v) => v.post_id);
+        const postIds = postHasTags.map((v) => v.post_id);
+        if (!postIds.length) {
+          throw new ApolloError('Not Found Posts', errorCodes.NOT_FOUND);
+        }
         query.andWhere('p.id IN (:postIds)', { postIds });
       }
 
