@@ -8,6 +8,7 @@ import createLoaders from './lib/createLoaders';
 import initializeConfig from './env';
 import cors from './lib/middlewares/cors';
 import compress from './lib/middlewares/compress';
+import checkUrl from './lib/middlewares/checkUrl';
 
 initializeConfig();
 const isProduction = process.env.NODE_ENV === 'production';
@@ -16,6 +17,7 @@ const app = new Koa();
 /* set up middlewares */
 app.use(logger());
 app.use(cors);
+app.use(checkUrl);
 app.use(bodyParser());
 app.use(compress);
 app.use(routes.routes()).use(routes.allowedMethods());
