@@ -38,7 +38,6 @@ export const typeDef = gql`
 
 interface PostArgs {
   url_slug: string;
-  id?: number;
 }
 
 export const resolvers: IResolvers = {
@@ -68,11 +67,7 @@ export const resolvers: IResolvers = {
     },
   },
   Query: {
-    post: async (_, { url_slug, id }: PostArgs) => {
-      if (id) {
-        const post = await getRepository(Post).findOne(id);
-        return post;
-      }
+    post: async (_, { url_slug }: PostArgs) => {
       if (!url_slug) {
         throw new ApolloError('Not Found Url Slug', errorCodes.BAD_REQUEST);
       }
