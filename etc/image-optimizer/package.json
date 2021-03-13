@@ -9,10 +9,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "prettier": "^2.2.0"
+    "prettier": "^2.2.1"
   },
   "dependencies": {
-    "aws-sdk": "^2.796.0",
+    "aws-sdk": "^2.863.0",
     "sharp": "^0.26.3"
   }
 }
