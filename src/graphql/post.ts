@@ -1,5 +1,5 @@
 import { gql, IResolvers, ApolloError } from 'apollo-server-koa';
-import { getRepository } from 'typeorm';
+import { getRepository, Not } from 'typeorm';
 import Tag, { PostTag } from '../entity/Tag';
 import Post, { SeriesPost } from '../entity/Post';
 import PostHasTag from '../entity/PostHasTag';
@@ -13,6 +13,12 @@ export const typeDef = gql`
     post_id: ID!
     url_slug: String!
     post_header: String!
+  }
+  type LinkPost {
+    id: ID!
+    post_header: String!
+    url_slug: String!
+    thumnail: String
   }
   type Post {
     id: ID!
@@ -28,6 +34,7 @@ export const typeDef = gql`
     released_at: Date
     tags: [String]!
     series_posts: [SeriesPost]
+    link_posts: [LinkPost]
   }
 
   extend type Query {
@@ -61,6 +68,25 @@ export const resolvers: IResolvers = {
           .getRawMany();
       }
       return seriesPosts;
+    },
+    link_posts: async (parent: Post) => {
+      const link_posts = await getRepository(Post).find({
+        where: {
+          open_yn: true,
+          series_id: Not(parent.series_id),
+        },
+        order: {
+          released_at: 'DESC',
+        },
+        skip: 0,
+        take: 5,
+      });
+      return link_posts.map((v) => ({
+        id: v.id,
+        post_header: v.post_header,
+        url_slug: v.url_slug,
+        thumnail: v.thumnail,
+      }));
     },
     preview_description: (parent: Post) => {
       return parent.post_body.slice(0, 200);
