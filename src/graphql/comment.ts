@@ -147,7 +147,7 @@ export const resolvers: IResolvers = {
       const decryptPassword = await decrypt(password, targetComment.salt);
       if (decryptPassword !== targetComment.password) {
         throw new ApolloError(
-          `Not Matched Password`,
+          'Not Matched Password',
           errorCodes.NOT_MATCHED_PASSWORD,
         );
       }
