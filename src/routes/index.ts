@@ -7,7 +7,7 @@ const routes = new Router();
 routes.use('/(rss|atom)', rss.routes());
 routes.use('/sitemaps', sitemaps.routes());
 
-routes.get('/', ctx => {
+routes.get('/health', (ctx) => {
   ctx.body = 'hello world';
 });
 
