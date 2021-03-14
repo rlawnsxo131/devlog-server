@@ -1,5 +1,5 @@
 import { gql, IResolvers, ApolloError } from 'apollo-server-koa';
-import { getRepository, Not } from 'typeorm';
+import { getRepository } from 'typeorm';
 import Tag, { PostTag } from '../entity/Tag';
 import Post, { SeriesPost } from '../entity/Post';
 import PostHasTag from '../entity/PostHasTag';
@@ -70,17 +70,21 @@ export const resolvers: IResolvers = {
       return seriesPosts;
     },
     link_posts: async (parent: Post) => {
-      const link_posts = await getRepository(Post).find({
-        where: {
-          open_yn: true,
-          series_id: Not(parent.series_id),
-        },
-        order: {
-          released_at: 'DESC',
-        },
-        skip: 0,
-        take: 5,
-      });
+      const query = getRepository(Post)
+        .createQueryBuilder('p')
+        .where('p.open_yn IS TRUE')
+        .orderBy('p.released_at', 'DESC')
+        .skip(0)
+        .take(5);
+      if (parent.series_id) {
+        query.andWhere('p.series_id <> :series_id', {
+          series_id: parent.series_id,
+        });
+      }
+      if (!parent.series_id) {
+        query.andWhere('p.id <> :post_id', { post_id: parent.id });
+      }
+      const link_posts = await query.getMany();
       return link_posts.map((v) => ({
         id: v.id,
         post_header: v.post_header,
