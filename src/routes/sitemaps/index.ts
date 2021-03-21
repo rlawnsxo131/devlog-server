@@ -1,4 +1,4 @@
-import * as Router from '@koa/router';
+import Router from '@koa/router';
 import { generalSitemap, postsSitemap, sitemapIndex } from './sitemaps.ctrl';
 
 const sitemaps = new Router();

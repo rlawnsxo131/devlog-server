@@ -1,4 +1,4 @@
-import * as serverless from 'serverless-http';
+import serverless from 'serverless-http';
 import {
   APIGatewayProxyEvent,
   APIGatewayProxyEventV2,

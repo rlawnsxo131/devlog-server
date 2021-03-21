@@ -7,7 +7,7 @@ import {
   UpdateDateColumn,
   getRepository,
 } from 'typeorm';
-import * as DataLoader from 'dataloader';
+import DataLoader from 'dataloader';
 import { groupByObjectId } from '../lib/utils';
 import PostHasTag from './PostHasTag';
 

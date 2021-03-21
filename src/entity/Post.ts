@@ -7,7 +7,7 @@ import {
   Index,
   getRepository,
 } from 'typeorm';
-import * as DataLoader from 'dataloader';
+import DataLoader from 'dataloader';
 import Series from './Series';
 import { groupByObjectId } from '../lib/utils';
 

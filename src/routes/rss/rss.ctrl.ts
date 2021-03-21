@@ -3,7 +3,7 @@ import Post from '../../entity/Post';
 import { getRepository } from 'typeorm';
 import { Feed } from 'feed';
 import { Item } from 'feed/lib/typings';
-import * as marked from 'marked';
+import marked from 'marked';
 import PostHasTag from '../../entity/PostHasTag';
 import Tag from '../../entity/Tag';
 

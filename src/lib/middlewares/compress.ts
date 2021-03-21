@@ -1,5 +1,5 @@
-import * as compress from 'koa-compress';
-import * as zlib from 'zlib';
+import compress from 'koa-compress';
+import zlib from 'zlib';
 
 export default compress({
   // filter(content_type) {

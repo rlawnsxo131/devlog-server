@@ -1,4 +1,4 @@
-import * as Router from '@koa/router';
+import Router from '@koa/router';
 import { getAllFeed, getTagFeed } from './rss.ctrl';
 
 const rss = new Router();

@@ -1,7 +1,7 @@
-import * as util from 'util';
-import * as crypto from 'crypto';
-export const randomBytesPromise = util.promisify(crypto.randomBytes);
-export const scryptPromise = util.promisify(crypto.scrypt);
+import { promisify } from 'util';
+import { scrypt, randomBytes } from 'crypto';
+export const randomBytesPromise = promisify(randomBytes);
+export const scryptPromise = promisify(scrypt);
 
 export function groupByObjectId<T>(
   ids: ReadonlyArray<number>,
