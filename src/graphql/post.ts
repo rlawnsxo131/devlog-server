@@ -18,14 +18,14 @@ export const typeDef = gql`
     id: ID!
     post_header: String!
     url_slug: String!
-    thumnail: String
+    thumbnail: String
   }
   type Post {
     id: ID!
     post_header: String!
     post_body: String!
     preview_description: String!
-    thumnail: String
+    thumbnail: String
     open_yn: Boolean!
     series_id: Int!
     url_slug: String!
@@ -89,7 +89,7 @@ export const resolvers: IResolvers = {
         id: v.id,
         post_header: v.post_header,
         url_slug: v.url_slug,
-        thumnail: v.thumnail,
+        thumbnail: v.thumbnail,
       }));
     },
     preview_description: (parent: Post) => {

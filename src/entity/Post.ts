@@ -23,7 +23,7 @@ export default class Post {
   post_body!: string;
 
   @Column({ default: null, nullable: true })
-  thumnail?: string;
+  thumbnail?: string;
 
   @Column({ default: false })
   open_yn!: boolean;
