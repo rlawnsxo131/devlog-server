@@ -16,5 +16,8 @@
   * API Gateway
   * Route53
   * CloudFront
-### Clientside Repository
-<https://github.com/rlawnsxo131/devlog-client>
+### Client Repository
+[v1] <https://github.com/rlawnsxo131/devlog-client>
+
+
+[v2] <https://github.com/rlawnsxo131/devlog-client-v2>
