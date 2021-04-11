@@ -35,7 +35,7 @@ const schema = makeExecutableSchema({
     post.resolvers,
     tag.resolvers,
     comment.resolvers,
-    series.resolvers
+    series.resolvers,
   ),
 });
 
