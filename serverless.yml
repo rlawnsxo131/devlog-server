@@ -19,6 +19,7 @@ provider:
   lambdaHashingVersion: 20201221
   apiGateway:
     shouldStartNameWithService: true
+    minimumCompressionSize: 1024
   
 
   environment:
