@@ -7,7 +7,11 @@ module.exports = {
   target: 'node',
   mode: slsw.lib.webpack.isLocal ? 'development' : 'production',
   // webpack critical warning pass
-  externals: [nodeExternals()],
+  externals: [
+    nodeExternals({
+      allowlist: [/mysql2/],
+    }),
+  ],
   resolve: {
     modules: ['node_modules'],
     extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
@@ -21,7 +25,8 @@ module.exports = {
     rules: [
       // all files with a `.ts` or `.tsx` extension will be handled by `ts-loader`
       {
-        test: /\.tsx?$/,
+        test: /\.(ts|tsx)$/,
+        exclude: /node_modules/,
         loader: 'ts-loader',
         options: {
           transpileOnly: true,

@@ -47,7 +47,8 @@ functions:
   app:
     handler: src/serverless.handler
     environment:
-      SLS_DEBUG: ${env:SERVERLESS_DEBUG}
+      # SLS_DEBUG: ${env:SERVERLESS_DEBUG}
+      SLS_DEBUG=*
     events:
       - http:
           path: /

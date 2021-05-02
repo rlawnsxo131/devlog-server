@@ -1,3 +1,4 @@
+-- need update
 CREATE DATABASE blog DEFAULT CHARACTER SET utf8mb4 COLLATE utf8_unicode_ci;
 
 DROP TABLE IF EXISTS admin_user;
