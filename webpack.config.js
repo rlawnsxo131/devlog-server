@@ -7,11 +7,7 @@ module.exports = {
   target: 'node',
   mode: slsw.lib.webpack.isLocal ? 'development' : 'production',
   // webpack critical warning pass
-  externals: [
-    nodeExternals({
-      allowlist: [/mysql2/],
-    }),
-  ],
+  externals: [nodeExternals()],
   resolve: {
     modules: ['node_modules'],
     extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],

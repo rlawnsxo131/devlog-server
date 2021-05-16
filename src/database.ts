@@ -8,6 +8,8 @@ import {
 } from 'typeorm';
 import entities from './entity';
 
+export const mysql = import('mysql2').then((module) => module);
+
 export default class Database {
   private connectionManager: ConnectionManager;
 
