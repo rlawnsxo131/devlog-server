@@ -51,7 +51,7 @@ export const createSeriesPostsLoader = () =>
   new DataLoader<Readonly<number>, Array<SeriesPost>>(async (seriesIds) => {
     const posts = await getRepository(Series)
       .createQueryBuilder('s')
-      .select(['p.id, p.url_slug, p.series_id, p.post_header, p.released_at'])
+      .select(['p.id, p.url_slug, p.series_id, p.post_header, p.updated_at'])
       .innerJoin(Post, 'p', 's.id = p.series_id')
       .where('p.series_id IN (:seriesIds)', { seriesIds })
       .andWhere('p.open_yn IS TRUE')
