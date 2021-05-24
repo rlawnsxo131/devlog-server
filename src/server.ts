@@ -3,9 +3,8 @@ import Database from './database';
 
 const { PORT } = process.env;
 
-const database = new Database();
-database.getConnection();
-
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+  const database = new Database();
+  await database.getConnection();
   console.log(`Server listening to PORT ${PORT}`);
 });
