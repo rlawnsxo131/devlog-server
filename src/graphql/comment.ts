@@ -91,14 +91,8 @@ export const resolvers: IResolvers = {
   },
   Mutation: {
     createComment: async (_, args) => {
-      const {
-        post_id,
-        reply_comment_id,
-        writer,
-        password,
-        email,
-        comment,
-      } = args as CreateCommentArgs;
+      const { post_id, reply_comment_id, writer, password, email, comment } =
+        args as CreateCommentArgs;
       const commentRepo = getRepository(Comment);
       const newComment = new Comment();
       if (reply_comment_id) {
@@ -132,13 +126,8 @@ export const resolvers: IResolvers = {
       }
     },
     updateComment: async (_, args) => {
-      const {
-        comment_id,
-        password,
-        writer,
-        email,
-        comment,
-      } = args as UpdateCommentArgs;
+      const { comment_id, password, writer, email, comment } =
+        args as UpdateCommentArgs;
       const commentRepo = getRepository(Comment);
       const targetComment = await commentRepo.findOne(comment_id);
       if (!targetComment) {
