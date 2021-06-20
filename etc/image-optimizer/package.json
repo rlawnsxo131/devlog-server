@@ -12,7 +12,7 @@
     "prettier": "^2.2.1"
   },
   "dependencies": {
-    "aws-sdk": "^2.863.0",
-    "sharp": "^0.26.3"
+    "aws-sdk": "^2.931.0",
+    "sharp": "^0.28.3"
   }
 }
