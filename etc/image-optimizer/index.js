@@ -14,9 +14,9 @@ async function resize(key, { format, w }) {
   }).promise();
 
   const info = await Sharp(s3Object.Body).metadata();
-  const parsedWidth = w && parseInt(w);
+  let parsedWidth = w && parseInt(w);
   if (info.width <= parsedWidth) {
-    return null;
+    parsedWidth = info.width;
   }
   const width = parsedWidth && Math.min(parsedWidth, 1024);
 
@@ -24,8 +24,8 @@ async function resize(key, { format, w }) {
   if (width) {
     task = task.resize({ width });
   }
-  task = task.withMetadata().toFormat(format).toBuffer();
-  const image = await task;
+  task = await task.withMetadata().toFormat(format).toBuffer();
+  const image = task;
 
   return image.toString('base64');
 }
