@@ -35,6 +35,11 @@ const apollo = new ApolloServer({
   },
 });
 
-apollo.applyMiddleware({ app, cors: false });
+async function start() {
+  await apollo.start();
+  apollo.applyMiddleware({ app, cors: false });
+}
+
+start();
 
 export default app;
