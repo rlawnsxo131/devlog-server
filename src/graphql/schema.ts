@@ -1,4 +1,4 @@
-import { makeExecutableSchema, gql, IResolvers } from 'apollo-server-koa';
+import { gql, IResolvers, makeExecutableSchema } from 'apollo-server-koa';
 import { merge } from 'lodash';
 import * as post from './post';
 import * as tag from './tag';

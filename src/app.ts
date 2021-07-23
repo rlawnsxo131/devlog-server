@@ -11,7 +11,7 @@ import compress from './lib/middlewares/compress';
 
 initializeConfig();
 const isProduction = process.env.NODE_ENV === 'production';
-const app = new Koa();
+const app = new Koa() as any;
 
 /* set up middlewares */
 app.use(logger());
@@ -34,6 +34,7 @@ const apollo = new ApolloServer({
     }
   },
 });
+
 apollo.applyMiddleware({ app, cors: false });
 
 export default app;
