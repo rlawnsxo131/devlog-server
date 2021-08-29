@@ -11,6 +11,8 @@ const cors: Middleware = (ctx, next) => {
   }
 
   const { origin } = ctx.headers;
+  if (!origin) return;
+  
   const valid = allowedHosts.some((regex) => regex.test(origin));
   if (!valid) return next();
 

@@ -11,12 +11,9 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "experimentalDecorators": true, // decorator
-    "emitDecoratorMetadata": true, // decorator
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "outDir": "./dist",
-  },
-  "exclude": [
-    "node_modules",
-    "build"
-  ]
+  }
 }

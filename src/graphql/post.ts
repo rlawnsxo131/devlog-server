@@ -1,4 +1,5 @@
-import { gql, IResolvers, ApolloError } from 'apollo-server-koa';
+import { gql, ApolloError } from 'apollo-server-koa';
+import { IResolvers } from '@graphql-tools/utils';
 import { getRepository } from 'typeorm';
 import Tag, { PostTag } from '../entity/Tag';
 import Post, { SeriesPost } from '../entity/Post';
