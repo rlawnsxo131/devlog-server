@@ -1,4 +1,5 @@
-import { gql, IResolvers } from 'apollo-server-koa';
+import { gql } from 'apollo-server-koa';
+import { IResolvers } from '@graphql-tools/utils';
 import { getRepository } from 'typeorm';
 import Tag from '../entity/Tag';
 import PostHasTag from '../entity/PostHasTag';

@@ -1,4 +1,5 @@
-import { gql, IResolvers, ApolloError } from 'apollo-server-koa';
+import { gql, ApolloError } from 'apollo-server-koa';
+import { IResolvers } from '@graphql-tools/utils';
 import { getRepository } from 'typeorm';
 import { createSaltAndHash, decrypt } from '../lib/utils';
 import Comment from '../entity/Comment';
@@ -90,9 +91,9 @@ export const resolvers: IResolvers = {
     },
   },
   Mutation: {
-    createComment: async (_, args) => {
+    createComment: async (_, args: CreateCommentArgs) => {
       const { post_id, reply_comment_id, writer, password, email, comment } =
-        args as CreateCommentArgs;
+        args;
       const commentRepo = getRepository(Comment);
       const newComment = new Comment();
       if (reply_comment_id) {
