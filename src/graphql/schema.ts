@@ -1,6 +1,7 @@
-import { gql } from 'apollo-server-koa';
+import { gql } from 'apollo-server-core';
 import { makeExecutableSchema } from '@graphql-tools/schema';
-import { merge } from 'lodash';
+import { IResolvers } from '@graphql-tools/utils';
+import merge from 'lodash.merge';
 import * as post from './post';
 import * as tag from './tag';
 import * as comment from './comment';
@@ -16,7 +17,7 @@ const typeDef = gql`
   }
 `;
 
-const resolvers = {
+const resolvers: IResolvers = {
   Query: {
     _version: () => '1.0',
   },

@@ -4,6 +4,12 @@ import logger from 'koa-logger';
 import routes from './routes';
 import schema from './graphql/schema';
 import { ApolloServer, ApolloError } from 'apollo-server-koa';
+import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
+import {
+  ApolloServerPluginLandingPageGraphQLPlayground,
+  ApolloServerPluginLandingPageDisabled,
+} from 'apollo-server-core';
+import http from 'http';
 import createLoaders from './lib/createLoaders';
 import initializeConfig from './env';
 import cors from './lib/middlewares/cors';
@@ -11,7 +17,8 @@ import compress from './lib/middlewares/compress';
 
 initializeConfig();
 const isProduction = process.env.NODE_ENV === 'production';
-const app = new Koa() as any;
+const httpServer = http.createServer();
+const app = new Koa();
 
 /* set up middlewares */
 app.use(logger());
@@ -33,13 +40,16 @@ const apollo = new ApolloServer({
       throw new ApolloError('Apollo Server Context Error');
     }
   },
+  plugins: [
+    ApolloServerPluginDrainHttpServer({ httpServer }),
+    isProduction
+      ? ApolloServerPluginLandingPageDisabled()
+      : ApolloServerPluginLandingPageGraphQLPlayground(),
+  ],
 });
 
-async function start() {
-  await apollo.start();
+apollo.start().then(() => {
   apollo.applyMiddleware({ app, cors: false });
-}
-
-start();
+});
 
 export default app;

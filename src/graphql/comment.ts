@@ -1,4 +1,4 @@
-import { gql, ApolloError } from 'apollo-server-koa';
+import { ApolloError, gql } from 'apollo-server-koa';
 import { IResolvers } from '@graphql-tools/utils';
 import { getRepository } from 'typeorm';
 import { createSaltAndHash, decrypt } from '../lib/utils';
