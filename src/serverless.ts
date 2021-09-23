@@ -6,24 +6,33 @@ import {
   APIGatewayProxyHandlerV2,
   Context,
 } from 'aws-lambda';
-import app from './app';
+import { app, apollo } from './app';
 import Database from './database';
 
-const serverlessApp = serverless(app);
+let serverlessApp: serverless.Handler | null = null;
 
 type EventType = APIGatewayProxyEvent | APIGatewayProxyEventV2;
+type HandlerType = APIGatewayProxyHandler | APIGatewayProxyHandlerV2;
 
-export const handler:
-  | APIGatewayProxyHandler
-  | APIGatewayProxyHandlerV2 = async (event: EventType, context: Context) => {
+export const handler: HandlerType = async (
+  event: EventType,
+  context: Context,
+) => {
   context.callbackWaitsForEmptyEventLoop = true;
+  if (!serverlessApp) {
+    await apollo.start();
+    apollo.applyMiddleware({ app, cors: false });
+    serverlessApp = serverless(app);
+  }
   const database = new Database();
   const connection = await database.getConnection();
   const response = await serverlessApp(event, context);
 
   try {
     await Promise.all([connection.close()]);
-  } catch (e) {}
+  } catch (e) {
+    console.log('database connection close error: ', e);
+  }
 
   return response;
 };
