@@ -13,7 +13,7 @@
     "@graphql-tools/utils": "^8.5.0",
     "@koa/router": "^10.1.1",
     "@types/aws-lambda": "^8.10.84",
-    "apollo-server-core": "^3.4.0",
+    "apollo-server-core": "^3.10.1",
     "apollo-server-koa": "^3.4.0",
     "aws-lambda": "^1.0.6",
     "dataloader": "^2.0.0",
