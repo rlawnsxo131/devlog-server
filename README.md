@@ -1,6 +1,10 @@
-# devlog-server
-<https://devlog.juntae.kim>
+# devlog-server (Deprecated)
+
+### Currently active repository
+https://github.com/rlawnsxo131/devlog-v3
+
 ## Personal Development blog by John
+
 ### Tech Stack
 * Typescript
 * MySQL
@@ -16,8 +20,8 @@
   * API Gateway
   * Route53
   * CloudFront
+
 ### Client Repository
 [v1] <https://github.com/rlawnsxo131/devlog-client>
-
 
 [v2] <https://github.com/rlawnsxo131/devlog-client-v2>
